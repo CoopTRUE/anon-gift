@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js" integrity="sha512-Ws+qbaGHSFw2Zc1e7XRpvW+kySrhmPLFYTyQ95mxAkss0sshj6ObdNP3HDWcwTs8zBJ60KpynKZywk0R8tG1GA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="main.js"></script>
     <title>Testing</title>
 </head>
 <body>
@@ -19,6 +19,9 @@
     </select>
     <select name="usdValue" id="usdValue">
         <option value="5">$5</option>
+        <option value="10">$10</option>
+        <option value="20">$20</option>
+        <option value="50">$50</option>
     </select>
     <select name="usdType" id="usdType">
         <option value="busd">BUSD</option>
