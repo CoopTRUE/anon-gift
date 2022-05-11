@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from flask_cors import CORS
 from web3 import Web3
 from web3.exceptions import TransactionNotFound
 from secret import MAIN_WALLET, PRIVATE_KEY
@@ -15,6 +16,7 @@ SUPPORTED_CARDS = {
 }
 # TODO: Add logging
 app = Flask(__name__)
+CORS(app)
 
 web3 = Web3(Web3.HTTPProvider("https://bsc-dataseed.binance.org/"))
 while not web3.isConnected():
@@ -29,6 +31,7 @@ def hello_world():
 
 @app.route("/transaction/<card_type>", methods=["POST"])
 def transaction_page(card_type):
+    print(request.form)
     if card_type not in SUPPORTED_CARDS.keys():
         print("ERROR NOT SUPPORTED CARD")
         return "ERROR NOT SUPPORTED CARD"
@@ -37,7 +40,13 @@ def transaction_page(card_type):
     if not txn_hash:
         print("ERROR NO TXN HASH")
         return "U gotta send da txn hash"
-    #34
+
+    with open("used.txt", "a+") as fp:
+        fp.seek(0)
+        if txn_hash in fp.read():
+            print("ERROR REUSED HASH")
+            return "REUSED HASH"
+        fp.write(txn_hash+"\n")
     try:
         # txn_hash = txn_hash.replace("'", "")
         transaction = eth.getTransaction(txn_hash)
