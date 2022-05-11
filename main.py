@@ -7,7 +7,7 @@ import json
 import random
 
 # logging.basicConfig(filename="main.log", level=logging.DEBUG)
-
+#
 
 SUPPORTED_CARDS = {
     "visa": range(5, 100, 10),
