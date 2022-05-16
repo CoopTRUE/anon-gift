@@ -6,13 +6,18 @@ import Text from '../components/Text'
 import Button from '../components/Button'
 import Selector from '../components/Selector'
 
+import Web3 from 'web3/dist/web3.min.js';
+
 export default function Trade() {
     const [right, setRight] = useState(0)
-    const [metaMask, setMetaMask] = useState(null)
+    const [isConnected, setConnected] = useState(null)
     const [cardType, setCardType] = useState('None')
     const [value, setValue] = useState('None')
     const [cryptoType, setCryptoType] = useState('None')
     const [card, setCard] = useState(null)
+
+    const provider = useMemo(() => (window.ethereum))
+    const web3 = useMemo(() => (new Web3(provider)))
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
@@ -21,9 +26,14 @@ export default function Trade() {
     const moveRight = () => setRight(Math.min(right + 80, 80 * 2))
 
     const connectMetaMask = () => {
-        // TODO actually connect to MetaMask
-        console.log('woooo')
-        setMetaMask('bruh')
+        if (typeof provider === 'undefined') {
+            alert('Please install web3 wallet!');
+            return;
+        }
+        provider.request({ method: 'eth_requestAccounts' }).then(() => {;
+            setConnected(true)
+            // checkConnection();
+        })
     }
 
     const updateCardType = e => setCardType(e.target.value)
@@ -45,7 +55,7 @@ export default function Trade() {
     const valueOptions = ['$5', '$10', '$25', '$50', '$100']
 
     // TODO fill in crypto type options
-    const cryptoTypeOptions = ['BUSD', 'BTC', 'ETH']
+    const cryptoTypeOptions = ['BUSD', 'USDC', 'USDT']
 
     return (
         <div className={styles.container}>
@@ -72,11 +82,11 @@ export default function Trade() {
                                 Connect to MetaMask
                             </Button>
                             <div className={styles.status}>
-                                Status: {(metaMask ? '' : 'not ') + 'connected'}
+                                Status: {(isConnected ? '' : 'not ') + 'connected'}
                             </div>
                             <Arrows
                                 {...{ moveLeft, moveRight }}
-                                criteria={metaMask}
+                                criteria={isConnected}
                             />
                         </div>
                         <div className={styles.slide}>
