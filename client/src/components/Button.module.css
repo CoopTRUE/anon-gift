@@ -1,0 +1,21 @@
+.button {
+    padding: 6px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 2em;
+    background: var(--accent);
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: white;
+    color: black;
+}
+
+.two {
+    background: transparent;
+}

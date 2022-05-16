@@ -1,0 +1,6 @@
+.text {
+    font-family: var(--font1);
+    font-weight: bold;
+    color: white;
+    font-size: 200px;
+}

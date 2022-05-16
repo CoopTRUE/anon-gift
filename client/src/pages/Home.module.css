@@ -1,0 +1,53 @@
+.hero {
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.innerContainer {
+    width: 80vw;
+}
+
+.buttonContainer {
+    margin-top: 50px;
+    gap: 20px;
+    display:flex;
+}
+
+.about {
+    background: #171717;
+    display: flex;
+    flex-direction: column;
+    padding-top: 200px;
+    align-items: center;
+}
+
+.innerAboutContainer {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+}
+
+.innerAboutContainer:nth-child(even) {
+    align-items: flex-start;
+}
+
+.innerAboutContainer:nth-child(odd) {
+    align-items: flex-end;
+}
+
+.aboutHeading {
+    line-height: 0.8em;
+    font-size: 150px !important;
+}
+
+.aboutText {
+    margin-top: 100px;
+    margin-bottom: 250px;
+    font-size: 25px;
+    max-width: 1000px;
+}
+

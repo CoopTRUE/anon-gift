@@ -1,0 +1,85 @@
+.container {
+    width: 100vw;
+    min-height: 100vh;
+    background: black;
+}
+
+.textContainer {
+    width: 80vw;
+    margin: auto;
+    padding-top: 200px;
+    text-align: center;
+    padding-bottom: 50px;
+    border-bottom: solid 2px lightgrey;
+}
+
+.form {
+    width: 80vw;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.window {
+    height: 600px;
+    overflow: hidden;
+}
+
+.reel {
+    position: relative;
+    display: flex;
+    height: inherit;
+    width: max-content;
+    transition: 0.1s ease-in-out;
+}
+
+.slide {
+    height: inherit;
+    width: 80vw;
+}
+
+.slide > * {
+    margin-bottom: 30px;
+}
+
+/* .slide:nth-child(even) {
+    background: red;
+}
+
+.slide:nth-child(odd) {
+    background: blue;
+} */
+
+.step {
+    font-size: 30px !important;
+}
+
+.title {
+    font-size: 80px !important;
+}
+
+.status {
+    color: lightgrey;
+    transform: translateY(-25px);
+}
+
+.selectContainer {
+    display: flex;
+    gap: 50px;
+}
+
+.arrowContainer {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.arrow {
+    color: white;
+    cursor: pointer;
+    transition: 0.05s ease-in-out;
+}
+
+.arrow:hover {
+    opacity: 0.5;
+}

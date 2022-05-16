@@ -1,0 +1,14 @@
+.text {
+    color: #dbdbdb;
+    transition: 0.05s ease-in-out;
+    cursor: pointer;
+}
+
+.first {
+    font-weight: bold;
+    color: white;
+}
+
+.text:hover {
+    opacity: 0.5;
+}

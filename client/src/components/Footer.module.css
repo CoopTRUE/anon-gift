@@ -1,0 +1,18 @@
+.container {
+    height: 100px;
+    width: 100vw;
+    background: #000000;
+}
+
+.innerContainer {
+    width: 80vw;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    margin: auto;
+}
+
+.text {
+    font-size: 15px;
+    color: lightgrey;
+}

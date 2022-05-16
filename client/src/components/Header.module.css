@@ -1,0 +1,16 @@
+.container {
+    height: 100px;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: black;
+}
+
+.tabs {
+    display: flex;
+    gap: 80px;
+}

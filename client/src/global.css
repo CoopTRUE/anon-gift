@@ -1,0 +1,31 @@
+:root {
+  --font1: 'Lato', Sans-Serif;
+  --font2: 'Catamaran', Sans-Serif;
+
+  --accent: #685ac7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font2);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+input, textarea {
+  outline: none;
+  resize: none;
+}

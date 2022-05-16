@@ -1,0 +1,16 @@
+.container {
+    width: 200px;
+}
+
+.label {
+    font-size: 20px !important;
+}
+
+.select {
+    width: inherit;
+    outline: none;
+    padding: 5px;
+    border-radius: 10px;
+    background: #1c1c1c;
+    color: white;
+}
