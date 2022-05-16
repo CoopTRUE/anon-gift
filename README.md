@@ -2,11 +2,16 @@
 
 Exchange crypto for gift cards anonymously and instantly!
 
-### Todos for you
+### Todos for Cooper
 
 -   Create `connectMetaMask` function in `client/src/pages/Trade.jsx`
 -   Create `sendTransaction` function in `client/src/pages/Trade.jsx`
 -   Fill in options in `client/src/pages/Trade.jsx` at `cardTypeOptions`, `valueOptions`, and `cryptoTypeOptions`
+
+### Todos for Michael
+
+-   Make help page
+-   Responsiveness
 
 ### Dev
 
