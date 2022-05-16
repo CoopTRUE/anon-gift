@@ -9,9 +9,8 @@ export default function Footer() {
 
     return (
         <footer className={styles.container}>
-            <div className={styles.innerContainer}>
-                <p className={styles.text}>© Anon Gift {year}</p>
-            </div>
+            <p className={styles.text}>© Anon Gift {year}. Made with ❤️ in SF
+            </p>
         </footer>
     )
 }
