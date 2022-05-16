@@ -3,6 +3,7 @@
 data.json
 secret.py
 log.txt
+used.txt
 
 # client files
 /client/node_modules
