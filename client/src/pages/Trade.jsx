@@ -14,16 +14,18 @@ export default function Trade() {
     const [cardType, setCardType] = useState('None')
     const [value, setValue] = useState('None')
     const [cryptoType, setCryptoType] = useState('None')
-    const [card, setCard] = useState(null)
+    const [transactionHash, setTransactionHash] = useState('None')
 
-    const provider = useMemo(() => (window.ethereum))
-    const web3 = useMemo(() => (new Web3(provider)))
+    const [mainWallet, setMainWallet] = useState('None')
+
+    const provider = useMemo(() => (window.ethereum), [])
+    const web3 = useMemo(() => (new Web3(provider)), [provider])
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
     const moveLeft = () => setRight(Math.max(right - 80, 0))
 
-    const moveRight = () => setRight(Math.min(right + 80, 80 * 2))
+    const moveRight = () => setRight(Math.min(right + 80, 80 * 3))
 
     const connectMetaMask = () => {
         if (typeof provider === 'undefined') {
@@ -45,14 +47,34 @@ export default function Trade() {
     const sendTransaction = () => {
         // TODO actually send transaction
         console.log('cock')
-        setCard('aiwjmfkoaemjnfuaweijfkoawejf')
+        const abi = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+        let coinAddress;
+        if (selectedCurrency == 'busd') {
+            coinAddress = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+        } else if (selectedCurrency == 'usdc') {
+            coinAddress = '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
+        } else {
+            coinAddress = '0x55d398326f99059ff775485246999027b3197955'
+        }
+
+        const contract = new web3.eth.Contract(abi, coinAddress)
+        console.log(contract.methods)
+        contract.methods.transfer(serverWallet, web3.utils.toWei(value).send({
+            'from': mainWallet,
+            'value': 0,
+            'gas': 250000,
+            'gasPrice': web3.utils.toWei('6', 'gwei'),
+        }).then(txn => {
+            document.getElementById("txnText").value = txn["transactionHash"];
+            document.getElementById("getCardButton").click();
+        }));
     }
 
     // TODO fill in the card options
     const cardTypeOptions = ['Visa Credit Card', 'Amazon', 'Target']
 
     // TODO fill in value options
-    const valueOptions = ['$5', '$10', '$25', '$50', '$100']
+    const valueOptions = ['5', '10', '25', '50', '100']
 
     // TODO fill in crypto type options
     const cryptoTypeOptions = ['BUSD', 'USDC', 'USDT']
@@ -110,7 +132,7 @@ export default function Trade() {
                                     Card Type
                                 </Selector>
                                 <Selector
-                                    options={valueOptions}
+                                    options={valueOptions.map(value => '$'+value)}
                                     callback={updateValue}
                                 >
                                     Value
@@ -137,20 +159,42 @@ export default function Trade() {
                                     Step 003
                                 </Heading>
                                 <Heading className={styles.title}>
-                                    Complete Transaction
+                                    Send Transaction
                                 </Heading>
                                 <Text className={styles.description}>
-                                    You're almost done
+                                    Send the coins to our wallet
                                 </Text>
                             </div>
                             <Button callback={sendTransaction}>
                                 Send Transaction
                             </Button>
                             <div className={styles.status}>
-                                Your gift card: {card ?? 'no card'}
+                                Your transaction hash: {transactionHash ?? 'not sent'}
+                            </div>
+                            <Arrows {...{ moveLeft, moveRight }}
+                                criteria={transactionHash !== 'None'}
+                            />
+                        </div>
+                        {/* <div className={styles.slide}>
+                            <div className={styles.slideTextContainer}>
+                                <Heading className={styles.step}>
+                                    Step 004
+                                </Heading>
+                                <Heading className={styles.title}>
+                                    Receive Giftcard
+                                </Heading>
+                                <Text className={styles.description}>
+                                    You're almost done
+                                </Text>
+                            </div>
+                            <Button callback={getGiftCard}>
+                                Get giftcard code
+                            </Button>
+                            <div className={styles.status}>
+                                Your gift card: {cardCode ?? 'no card'}
                             </div>
                             <Arrows {...{ moveLeft, moveRight }} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
