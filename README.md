@@ -18,7 +18,11 @@ Exchange crypto for gift cards anonymously and instantly!
 Server
 
 ```bash
-# ...
+# -- install dependencies --
+cd server && pip install -r requirements.txt
+
+# -- run dev server --
+cd server && python3 api.py
 ```
 
 Client
@@ -38,7 +42,6 @@ cd client && npm run dev
 cd client && yarn build
 # OR
 cd client && npm run build
-#
 ```
 
 ### Stack
