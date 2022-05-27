@@ -21,7 +21,7 @@ Server
 # -- install dependencies --
 cd server && pip install -r requirements.txt
 
-# -- run dev server --
+# -- run flask server --
 cd server && python3 api.py
 ```
 
