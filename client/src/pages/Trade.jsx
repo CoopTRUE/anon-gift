@@ -10,19 +10,24 @@ import Web3 from 'web3/dist/web3.min.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import NETWORKS from '../constants/networks.js'
+import COINS from '../constants/coins.js'
+import ABI from '../constants/abi.json'
+
 export default function Trade() {
     const [right, setRight] = useState(0)
-    const [isConnected, setConnected] = useState(null)
     const [cardType, setCardType] = useState('None')
     const [value, setValue] = useState('None')
     const [cryptoType, setCryptoType] = useState('None')
     const [transactionHash, setTransactionHash] = useState('None')
     const [cardCode, setCardCode] = useState('None')
 
-    const [mainWallet, setMainWallet] = useState('None')
+    const [mainWalletAddress, setMainWalletAddress] = useState('None')
+    const [chainId, setChainId] = useState(56)
 
     const [valueOptions, setValueOptions] = useState([])
     const [cardOptions, setCardOptions] = useState([])
+    const cryptoTypeOptions = useMemo(() => (chainId ? Object.keys(COINS[chainId]) : []), [chainId])
 
     const provider = useMemo(() => (window.ethereum), [])
     const web3 = useMemo(() => (new Web3(provider)), [provider])
@@ -34,14 +39,21 @@ export default function Trade() {
     const moveRight = () => setRight(Math.min(right + 80, 80 * 3))
 
     const connectMetaMask = () => {
-        updateCardOptions()
         if (typeof provider === 'undefined') {
             alert('Please install web3 wallet!');
             return;
         }
-        provider.request({ method: 'eth_requestAccounts' }).then(() => {;
-            setConnected(true)
-            provider.request({ method: 'eth_requestAccounts' }).then(accounts => {setMainWallet(accounts[0])});
+        provider.request({ method: 'eth_requestAccounts' }).then((accounts) => {
+            provider.request({ method: 'eth_chainId' }).then((chainId) => {
+                chainId*=1 // convert to string
+                if (chainId in NETWORKS) {
+                    setChainId(chainId)
+                    setMainWalletAddress(accounts[0])
+                    updateCardOptions()
+                } else {
+                    alert('Please connect to a supported network!')
+                }
+            })
         })
     }
 
@@ -56,19 +68,11 @@ export default function Trade() {
 
     const sendTransaction = () => {
         // TODO actually send transaction
-        const abi = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
-        const contractAddress = {
-            'BUSD': '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-            'USDC': '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-            'USDT': '0x55d398326f99059ff775485246999027b3197955'
-        }[cryptoType]
-
-        console.log(contractAddress)
-
-        const contract = new web3.eth.Contract(abi, contractAddress)
+        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
         console.log(contract.methods, value.substring(1))
+
         const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(value.substring(1))).send({
-            'from': mainWallet,
+            'from': mainWalletAddress,
             'value': 0,
             'gas': 250000,
             'gasPrice': web3.utils.toWei('6', 'gwei'),
@@ -108,8 +112,7 @@ export default function Trade() {
         });
     }
 
-    const cryptoTypeOptions = ['BUSD', 'USDC', 'USDT']
-
+    // TODO: add network selector
     return (
         <div className={styles.container}>
             <div className={styles.textContainer}>
@@ -136,11 +139,11 @@ export default function Trade() {
                                 Connect to MetaMask
                             </Button>
                             <div className={styles.status}>
-                                Status: {(isConnected ? '' : 'not ') + 'connected'}
+                                Status: {(mainWalletAddress==='None' ? 'not ' : '') + 'connected'}
                             </div>
                             <Arrows
                                 {...{ moveLeft, moveRight }}
-                                criteria={isConnected}
+                                criteria={mainWalletAddress!=='None'}
                             />
                         </div>
                         <div className={styles.slide}>
