@@ -90,7 +90,21 @@ export default function Trade() {
         )
     }
 
-    const getCardCode = () => {}
+    const getCardCode = () => {
+        fetch(`http://127.0.0.1:5000/transaction/${chainId}/${cardType}`, {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+            body: JSON.stringify({'txn-hash': transactionHash}),
+        }).then(response => response.json())
+        .then(data => {
+            setCardCode(data)
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    }
 
     const updateCardValues = (cardType) => {
         fetch('http://127.0.0.1:5000/getAvailable')
