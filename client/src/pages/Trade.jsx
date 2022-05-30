@@ -71,7 +71,7 @@ export default function Trade() {
         const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
         console.log(contract.methods, value.substring(1))
 
-        const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(value.substring(1))).send({
+        const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(value.substring(1), chainId===56 ? 'ether' : 'lovelace')).send({
             'from': mainWalletAddress,
             'value': 0,
             'gas': 250000,
