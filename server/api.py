@@ -43,6 +43,9 @@ def get_cards():
     with open("data.json") as fp:
         return json.load(fp)
 
+def write_cards(data):
+    with open("data.json", "wt") as fp:
+        json.dump(data, fp, indent=2)
 
 def get_cards_safe(use_real_name: bool = False):
     return {
@@ -115,7 +118,8 @@ def get_card(card_type, card_value, pop = True):
         card_code = cards[card_type][card_value].pop()
     else:
         card_code = cards[card_type][card_value][0]
-    return card_value
+    write_cards(cards)
+    return card_code
     # return {
     #     "card-type": card_type,
     #     "card-code": card_code,
@@ -129,4 +133,4 @@ api.add_resource(get_available, '/getAvailable')
 api.add_resource(transaction, '/transaction/<chain_id>/<card_type>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0' ,debug=True)
