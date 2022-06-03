@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styles from './Trade.module.css'
 
 import Heading from '../components/Heading'
@@ -15,22 +15,41 @@ import COINS from '../constants/coins.js'
 import ABI from '../constants/abi.json'
 
 export default function Trade() {
+    // un-comment this on production
+    // useEffect(() => console.log(
+    //     '%cIf you are reading this, you may want to work at my company :D Send me an email!',
+    //     'font-size: 20px; font-weight: bold;'
+    // ), [])
+
     const [right, setRight] = useState(0)
     const [cardType, setCardType] = useState('None')
-    const [value, setValue] = useState('None')
+    const [cardValue, setCardValue] = useState('None')
     const [cryptoType, setCryptoType] = useState('None')
     const [transactionHash, setTransactionHash] = useState('None')
     const [cardCode, setCardCode] = useState('None')
 
     const [mainWalletAddress, setMainWalletAddress] = useState('None')
-    const [chainId, setChainId] = useState(56)
+    const [chainId, setChainId] = useState(0)
 
     const [valueOptions, setValueOptions] = useState([])
     const [cardOptions, setCardOptions] = useState([])
-    const cryptoTypeOptions = useMemo(() => (chainId ? Object.keys(COINS[chainId]) : []), [chainId])
+    const [cryptoTypeOptions, setCryptoTypeOptions] = useState([])
+    const updateCryptoTypeOptions = async (mainWalletAddress, chainId) => {
+        let temp = []
+        for (const [symbol, address] of Object.entries(COINS[chainId])) {
+            const contract = new web3.eth.Contract(ABI, address)
+            const balance = await contract.methods.balanceOf(mainWalletAddress).call()
+            if (parseInt(balance) > 0) {
+                temp.push('✔'+symbol)
+            } else {
+                temp.push('✘'+symbol)
+            }
+        }
+        setCryptoTypeOptions(temp)
+    }
 
-    const provider = useMemo(() => (window.ethereum), [])
-    const web3 = useMemo(() => (new Web3(provider)), [provider])
+    const provider = useMemo(() => window.ethereum, [])
+    const web3 = useMemo(() => new Web3(provider), [provider])
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
@@ -40,8 +59,7 @@ export default function Trade() {
 
     const connectMetaMask = () => {
         if (typeof provider === 'undefined') {
-            alert('Please install web3 wallet!');
-            return;
+            return toast.error('Please install a web3 provider!')
         }
         provider.request({ method: 'eth_requestAccounts' }).then((accounts) => {
             provider.request({ method: 'eth_chainId' }).then((chainId) => {
@@ -50,8 +68,9 @@ export default function Trade() {
                     setChainId(chainId)
                     setMainWalletAddress(accounts[0])
                     updateCardOptions()
+                    updateCryptoTypeOptions(accounts[0], chainId)
                 } else {
-                    alert('Please connect to a supported network!')
+                    toast.error('Please connect to a supported network!')
                 }
             })
         })
@@ -62,16 +81,15 @@ export default function Trade() {
         updateCardValues(e.target.value)
     }
 
-    const updateValue = e => {setValue(e.target.value)}
+    const updateValue = e => setCardValue(e.target.value)
 
     const updateCryptoType = e => setCryptoType(e.target.value)
 
     const sendTransaction = () => {
-        // TODO actually send transaction
+        if (cryptoType.charAt(0) === '✘') return toast.error('Please select a crypto in your wallet!')
         const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
-        console.log(contract.methods, value.substring(1))
 
-        const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(value.substring(1), chainId===56 ? 'ether' : 'lovelace')).send({
+        const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(cardValue.substring(1), chainId===56 ? 'ether' : 'lovelace')).send({
             'from': mainWalletAddress,
             'value': 0,
             'gas': 250000,
@@ -121,10 +139,12 @@ export default function Trade() {
     const updateCardOptions = () => {
         fetch('http://127.0.0.1:5000/getAvailable')
         .then(response => response.json())
-        .then(data => {
+        .then(data => (
             setCardOptions(Object.keys(data))
-        });
+        ));
     }
+
+    provider.on('chainChanged', () => window.location.reload())
 
     // TODO: add network selector
     return (
@@ -197,7 +217,7 @@ export default function Trade() {
                                 {...{ moveLeft, moveRight }}
                                 criteria={
                                     cardType !== 'None' &&
-                                    value !== 'None' &&
+                                    cardValue !== 'None' &&
                                     cryptoType !== 'None'
                                 }
                             />
