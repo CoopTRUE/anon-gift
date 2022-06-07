@@ -35,17 +35,13 @@ export default function Trade() {
     const [cardOptions, setCardOptions] = useState([])
     const [cryptoTypeOptions, setCryptoTypeOptions] = useState([])
     const updateCryptoTypeOptions = async (mainWalletAddress, chainId) => {
-        let temp = []
-        for (const [symbol, address] of Object.entries(COINS[chainId])) {
-            const contract = new web3.eth.Contract(ABI, address)
-            const balance = await contract.methods.balanceOf(mainWalletAddress).call()
-            if (parseInt(balance) > 0) {
-                temp.push('✔'+symbol)
-            } else {
-                temp.push('✘'+symbol)
-            }
-        }
-        setCryptoTypeOptions(temp)
+        setCryptoTypeOptions(await Promise.all(
+            Object.entries(COINS[chainId]).map(async ([symbol, address]) => {
+                const contract = new web3.eth.Contract(ABI, address)
+                const balance = await contract.methods.balanceOf(mainWalletAddress).call()
+                return (parseInt(balance)>0 ? '✔' : '✘') + symbol
+            })
+        ))
     }
 
     const provider = useMemo(() => window.ethereum, [])
