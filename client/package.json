@@ -1,12 +1,4 @@
 {
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build"
-    },
-    "devDependencies": {
-        "@vitejs/plugin-react": "^1.3.2",
-        "vite": "^2.9.10"
-    },
     "dependencies": {
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
@@ -14,6 +6,12 @@
         "react-slide-routes": "^2.0.0",
         "react-toastify": "^9.0.4",
         "web-vitals": "^2.1.4",
-        "web3": "^1.7.3"
+        "web3": "^1.7.3",
+        "@vitejs/plugin-react": "^1.3.2",
+        "vite": "^2.9.10"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
     }
 }
