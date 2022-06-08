@@ -1,16 +1,9 @@
 {
   "dependencies": {
-    "concurrently": "^7.2.1",
     "express": "^4.18.1",
     "nodemon": "^2.0.16"
   },
   "scripts": {
-    "install": "pnpm run install-client && pnpm run install-server",
-    "install-pnpm": "npm install -g pnpm",
-    "install-server": "pnpm install",
-    "install-client": "cd client && pnpm install",
-    "build": "cd client && pnpm run build",
-    "heroku-postbuild": "npm run install-pnpm && pnpm run install-client && pnpm run build",
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   }
 }
