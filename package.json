@@ -1,10 +1,10 @@
 {
     "scripts": {
-        "install": "cd server && pnpm install && cd ../client && pnpm install",
+        "install": "npm run install-pnpm && cd server && pnpm install && cd ../client && pnpm install",
         "dev": "cd client && pnpm run dev",
         "start": "cd server && pnpm run start",
         "build": "cd client && pnpm run build",
         "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true",
-        "heroku-postbuild": "npm run install-pnpm && pnpm run install && pnpm run build && pnpm run start"
+        "heroku-postbuild": "pnpm run build && pnpm run start"
     }
 }
