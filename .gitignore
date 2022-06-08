@@ -1,12 +1,9 @@
 # server files
-.idea
-data.json
-secret.py
+/server/data.json
+/server/node_modules
 log.txt
-used.txt
 
 # client files
-/node_modules
 /client/node_modules
 /client/.pnp
 /client/.pnp.js

@@ -1,12 +1,9 @@
 {
-  "dependencies": {
-    "express": "^4.18.1",
-    "nodemon": "^2.0.16"
-  },
-  "scripts": {
-    "build": "cd client && npm run build",
-    "install-client": "cd client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
-    "start": "nodemon server.js"
-  }
+    "scripts": {
+        "install": "npm run install-pnpm && cd server && pnpm install && cd ../client && pnpm install",
+        "dev": "cd client && pnpm run dev",
+        "start": "cd server && pnpm run start",
+        "build": "cd client && pnpm run build",
+        "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true"
+    }
 }
