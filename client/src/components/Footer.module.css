@@ -14,5 +14,6 @@
 
 .imageButton {
     background-image: url('src/assets/octocat.svg');
-    width:30px;height:auto;
+    margin: 0 20px 0 20px;
+    width:35px;height:auto;
 }
