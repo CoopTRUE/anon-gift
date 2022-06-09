@@ -140,7 +140,7 @@ export default function Trade() {
         ));
     }
 
-    provider.on('chainChanged', () => window.location.reload())
+    provider?.on('chainChanged', () => window.location.reload())
 
     // TODO: add network selector
     return (
