@@ -9,8 +9,8 @@ export default function Footer() {
 
     return (
         <footer className={styles.container}>
-            <p className={styles.text}>© Anon Gift {year}. Made with ❤️ in SF
-            </p>
+            <p className={styles.text}>© Anon Gift {year}. Made with ❤️ in SF</p>
+            <input className={styles.imageButton} onClick={() => window.location='https://github.com/CoopTRUE/anon-gift'} type='image' src='src/assets/octocat.svg'/>
         </footer>
     )
 }

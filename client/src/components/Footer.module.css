@@ -5,10 +5,14 @@
     text-align: center;
     display: table-cell;
     vertical-align: middle;
-
 }
 
 .text {
     font-size: 15px;
     color: lightgrey;
+}
+
+.imageButton {
+    background-image: url('src/assets/octocat.svg');
+    width:30px;height:auto;
 }
