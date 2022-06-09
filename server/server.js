@@ -12,7 +12,7 @@ app.get("*", function (request, response) {
     response.sendFile(path.resolve(__dirname, "../client/dist", "index.html"));
 });
 
-mongoose.connect('mongodb+srv://admin:4hLPA6agNBgTmyWy@cluster0.ubccam1.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully!");

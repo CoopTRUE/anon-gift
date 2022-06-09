@@ -6,6 +6,6 @@
     "nodemon": "^2.0.16"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon server.js"
   }
 }
