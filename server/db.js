@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-async function connect(verbose) {
+async function connect(verbose=true) {
+    if (verbose) console.log('Connecting to database...')
     await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
     if (verbose) console.log('Connected to MongoDB');
 }
