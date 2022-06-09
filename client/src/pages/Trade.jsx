@@ -47,6 +47,8 @@ export default function Trade() {
     const provider = useMemo(() => window.ethereum, [])
     const web3 = useMemo(() => new Web3(provider), [provider])
 
+    const getSubpage = subpage => `${window.location.protocol}//${window.location.host}/${subpage}`
+
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
     const moveLeft = () => setRight(Math.max(right - 80, 0))
@@ -121,7 +123,7 @@ export default function Trade() {
     }
 
     const updateCardValues = (cardType) => {
-        fetch('http://127.0.0.1:5000/getAvailable')
+        fetch(getSubpage('getAvailable'))
         .then(response => response.json())
         .then(data => {
             for (const [serverCardType, cardValues] of Object.entries(data)) {
@@ -133,7 +135,7 @@ export default function Trade() {
     }
 
     const updateCardOptions = () => {
-        fetch('http://127.0.0.1:5000/getAvailable')
+        fetch(getSubpage('getAvailable'))
         .then(response => response.json())
         .then(data => (
             setCardOptions(Object.keys(data))
