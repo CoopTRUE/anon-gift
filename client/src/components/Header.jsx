@@ -6,9 +6,9 @@ import Tab from './Tab'
 export default function Header() {
     const tabs = useMemo(
         () => [
-            ['trade', '/trade'],
             ['about', '/#about'],
-            ['help', '/help'],
+            ['trade', '/trade'],
+            // ['help', '/help'],
         ],
         []
     )

@@ -34,30 +34,30 @@ export default function Home() {
             <div className={styles.about} id="about">
                 <div className={styles.innerAboutContainer}>
                     <Heading className={styles.aboutHeading}>
-                        What are we?
+                        How does it work?
                     </Heading>
                     <Text className={styles.aboutText}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
+                        You send crypto, we send back giftcards. It's as simple as that
+
                     </Text>
                 </div>
                 <div className={styles.innerAboutContainer}>
                     <Heading className={styles.aboutHeading}>
-                        How does it work?
+                        Is it legit?
                     </Heading>
                     <Text className={styles.aboutText}>
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto beatae vitae dicta sunt explicabo. Nemo
-                        enim ipsam voluptatem quia voluptas sit aspernatur aut
-                        odit aut fugit, sed quia consequuntur magni dolores eos
-                        qui ratione voluptatem sequi nesciunt. Neque porro
-                        quisquam est, qui dolorem ipsum quia dolor sit amet,
-                        consectetur, adipisci velit, sed quia non numquam eius
+                        Anon Gift is 100% safe, secure, and anonymous. Our code is open source on github and runs completely autonomously.
+                        We do not collect or log any user data
+                    </Text>
+                </div>
+                <div className={styles.innerAboutContainer}>
+                    <Heading className={styles.aboutHeading}>
+                        Why make this?
+                    </Heading>
+                    <Text className={styles.aboutText}>
+                        In most crypto exchanges, you are required to provide KYC to even begin trading. This is a pain for most people.
+                        Anon Gift is a completely anonymous exchange. You do not need to provide any personal information to completely
+                        use the exchange.
                     </Text>
                 </div>
             </div>
