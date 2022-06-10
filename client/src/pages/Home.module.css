@@ -1,8 +1,8 @@
 .hero {
     width: 100vw;
     height: 100vh;
-    background: rgb(63,94,251);
-    background: linear-gradient(330deg, rgba(63,94,251,1) 23%, rgba(252,70,107,1) 81%);
+    background: rgb(255, 50, 0);
+    background: linear-gradient(153deg, rgba(255, 50, 0, 1) 0%, rgba(131, 58, 180, 1) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,7 +15,7 @@
 .buttonContainer {
     margin-top: 50px;
     gap: 20px;
-    display:flex;
+    display: flex;
 }
 
 .about {

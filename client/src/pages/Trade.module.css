@@ -3,8 +3,8 @@
     min-height: 100vh;
     /* background: rgb(34,193,195);
     background: linear-gradient(23deg, rgba(34,193,195,1) 0%, rgba(69,45,253,1) 88%); */
-    background: rgb(108,50,119);
-    background: linear-gradient(14deg, rgba(108,50,119,1) 23%, rgba(70,218,252,1) 81%)
+    background: rgb(144,70,51);
+    background: linear-gradient(20deg, rgba(144,70,51,1) 15%, rgba(52,60,200,1) 49%, rgba(223,31,209,1) 89%);
 }
 
 .textContainer {
@@ -107,11 +107,12 @@
     background-clip: text;
     color: transparent;
     animation: rainbow_animation 1500s linear infinite;
-    background-size: 100% 100%;
+    /* background-size: 100% 100%; */
+    font-weight: bolder;
 }
 
 .arrowOn:hover {
-    animation: rainbow_animation 300s linear infinite;
+    opacity: 0.5;;
 }
 
 @keyframes rainbow_animation {
