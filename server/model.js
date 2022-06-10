@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model('giftcards', mongoose.Schema({
-    name: String,
+    type: String,
     value: Number,
     code: String
 }));

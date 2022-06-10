@@ -9,8 +9,8 @@ connect()
 
 const Giftcard = require('./model')
 
-async function addCard(name, value, code) {
-    const giftcard = new Giftcard({name, value, code})
+async function addCard(type, value, code) {
+    const giftcard = new Giftcard({type, value, code})
     await giftcard.save()
 }
 
@@ -26,20 +26,22 @@ async function getCardsSafely() {
     */
     const cards = await Giftcard.find()
     return cards.reduce((acc, card) => {
-        const { id, name, value, code } = card;
-        if (name in acc) {
-            if (!(value in acc[name])) {
-                acc[name].push(value)
+        const { id, type, value, code } = card;
+        if (type in acc) {
+            if (!(value in acc[type])) {
+                acc[type].push(value)
             }
         }
         else {
-            acc[name] = [value]
+            acc[type] = [value]
         }
         return acc;
     }, {})
 }
 
 async function retrieveCard(type, value) {
+    const giftcard = await Giftcard.findOneAndDelete({type, value})
+    return giftcard.code
 
 }
 module.exports = {

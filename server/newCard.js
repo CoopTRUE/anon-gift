@@ -17,7 +17,7 @@ const Giftcard = require('./model')
 
 async function newCard(){
     await db.addCard(
-        await ask('Name: '),
+        await ask('Type: '),
         await ask('Value: '),
         await ask('Code: ')
     )

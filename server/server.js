@@ -17,7 +17,7 @@ const Giftcard = require('./model')
 app.get('/getAvailable', cors(), async (req, res) => {
     /* returns giftcards and values
     {
-        card name: [
+        card type: [
             value,
             ...
         ],
@@ -41,7 +41,6 @@ Object.entries(chains).forEach(([id, rpc]) => {
 
 app.get('/transaction', cors(), async (req, res) => {
     const { chainId, cardType, txnHash } = req.query;
-
     // check if all required parameters are present
     if (chainId===undefined || cardType===undefined || txnHash===undefined) {
         return res.status(400).json({ error: 'Missing parameters' })
@@ -83,18 +82,17 @@ app.get('/transaction', cors(), async (req, res) => {
     abiDecoder.addABI(abi);
     const transactionParams = abiDecoder.decodeMethod(transaction.input).params
     // check if transaction is to the server wallet
-    console.log(transactionParams[0].value)
     if (transactionParams[0].value !== serverWallet) {
         return res.status(400).json({ error: 'Transaction is not to the server wallet' })
     }
 
     // check if transaction is a valid amount
-    const total = parseInt(web3.utils.fromWei(transactionParams[1].value, chainId ? 'ether' : 'lovelace'))
-    if (!cards[cardType].includes(total)) {
-        return res.status(400).json({ error: `Transaction is not a valid amount: ${cards[cardType]}` })
+    const value = parseInt(web3.utils.fromWei(transactionParams[1].value, chainId ? 'ether' : 'lovelace'))
+    if (!cards[cardType].includes(value)) {
+        return res.status(400).json({ error: `Transaction value is not a valid amount: ${cards[cardType]}` })
     }
 
-    return res.json(true)
+    return res.json(await retrieveCard(cardType, value))
 })
 
 const PORT = process.env.PORT || 3000;
