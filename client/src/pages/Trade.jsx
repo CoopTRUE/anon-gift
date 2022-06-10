@@ -302,7 +302,7 @@ function Arrows({ moveLeft, moveRight, criteria }) {
             <div className={styles.arrow} onClick={moveLeft}>
                 {'← go back'}
             </div>
-            <div className={styles.arrow} onClick={moveRightWithCriteria}>
+            <div className={criteria ? styles.arrowOn : styles.arrow} onClick={moveRightWithCriteria}>
                 {'continue →'}
             </div>
         </div>
