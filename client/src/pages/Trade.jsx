@@ -179,7 +179,7 @@ export default function Trade() {
                             </div>
                             <Button callback={connectMetaMask}>
                             {/* <Button callback={getGiftCard}> */}
-                                Connect to MetaMask
+                                Connect to MetaMask🦊
                             </Button>
                             <div className={styles.status}>
                                 Status: {(mainWalletAddress==='None' ? 'not ' : '') + 'connected'}
