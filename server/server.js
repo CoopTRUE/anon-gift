@@ -28,7 +28,6 @@ app.get('/getAvailable', cors(), async (req, res) => {
 // web3 stuff
 const { serverWallet, chains, coins, abi } = require('./constants');
 const Web3 = require('web3');
-const Contract = require('web3-eth-contract')
 
 // create web3 instances prematurely to avoid slowdown on individual requests
 web3Instances = {}
