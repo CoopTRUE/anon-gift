@@ -37,8 +37,7 @@ export default function Home() {
                         How does it work?
                     </Heading>
                     <Text className={styles.aboutText}>
-                        You send crypto, we send back giftcards. It's as simple as that
-
+                        You send crypto, we send back gift cards. It's as simple as that.
                     </Text>
                 </div>
                 <div className={styles.innerAboutContainer}>
@@ -47,17 +46,16 @@ export default function Home() {
                     </Heading>
                     <Text className={styles.aboutText}>
                         Anon Gift is 100% safe, secure, and anonymous. Our code is open source on github and runs completely autonomously.
-                        We do not collect or log any user data
+                        We do not collect or log any user data.
                     </Text>
                 </div>
                 <div className={styles.innerAboutContainer}>
                     <Heading className={styles.aboutHeading}>
-                        Why make this?
+                        Why use this?
                     </Heading>
                     <Text className={styles.aboutText}>
                         In most crypto exchanges, you are required to provide KYC to even begin trading. This is a pain for most people.
-                        Anon Gift is a completely anonymous exchange. You do not need to provide any personal information to completely
-                        use the exchange.
+                        Anon Gift is a completely anonymous exchange. You do not need to provide any personal information to use the exchange.
                     </Text>
                 </div>
             </div>

@@ -174,7 +174,7 @@ export default function Trade() {
                                     Connect to your wallet
                                 </Heading>
                                 <Text className={styles.description}>
-                                    Allows for us to make transaction
+                                    Allows for us to make transactions
                                 </Text>
                             </div>
                             <Button callback={connectMetaMask}>
