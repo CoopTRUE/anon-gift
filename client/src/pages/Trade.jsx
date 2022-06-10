@@ -89,7 +89,7 @@ export default function Trade() {
         const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType.substring(1)])
 
         const sendCoins = contract.methods.transfer(
-            '0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66',
+            '0x0367De624725fAfCA0e9953492ce8A0a7C0A05D9',
             web3.utils.toWei(
                 cardValue.startsWith('$') ? cardValue.substring(1) : cardValue,
                 chainId===56 ? 'ether' : 'lovelace')

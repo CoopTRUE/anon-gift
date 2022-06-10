@@ -1,5 +1,5 @@
 module.exports = {
-    serverWallet: '0x9b681e7074d5ff2edc85a5381a84a7687abb7a66',
+    serverWallet: '0x0367de624725fafca0e9953492ce8a0a7c0a05d9',
     chains: {
         56: 'https://bsc-dataseed.binance.org',
         250: 'https://rpc.fantom.network',
