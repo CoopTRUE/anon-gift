@@ -105,7 +105,7 @@ app.get('/transaction', cors(), async (req, res) => {
     return res.json(await retrieveCard(cardType, value))
 })
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 2000;
 app.get('*', function (request, response) {
     response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
 });

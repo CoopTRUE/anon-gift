@@ -1,9 +1,10 @@
 {
     "scripts": {
-        "install": "npm run install-pnpm && cd server && pnpm install && cd ../client && pnpm install",
-        "dev": "cd client && pnpm run dev",
+        "install": "npm run install-pnpm && pnpm run install-concurrently && cd server && pnpm install && cd ../client && pnpm install",
+        "dev": "concurrently --kill-others \"cd client && pnpm run dev\" \"pnpm run start\"",
         "start": "cd server && pnpm run start",
         "build": "cd client && pnpm run build",
-        "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true"
+        "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true",
+        "install-concurrently": "npm install -g concurrently"
     }
 }

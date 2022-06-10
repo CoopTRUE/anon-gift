@@ -47,7 +47,7 @@ export default function Trade() {
     const provider = useMemo(() => window.ethereum, [])
     const web3 = useMemo(() => new Web3(provider), [provider])
 
-    const getSubpage = subpage => `${window.location.protocol}//${window.location.host}/${subpage}`
+    const getSubpage = subpage => `${process.env.NODE_ENV === 'production' ? window.location.protocol : 2000}//${window.location.host}/${subpage}`
     // const getSubpage = subpage => `${window.location.protocol}//localhost:2000/${subpage}`
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
