@@ -8,6 +8,7 @@ Exchange crypto for gift cards anonymously and instantly!ns`
 ### Dev
 
 Production
+
 ```bash
 # -- install dependencies --
 npm run install
@@ -20,13 +21,16 @@ pnpm run start
 ```
 
 Client
+
 ```bash
 # -- develop --
 pnpm run dev
 ```
 
 ### Stack
--   React
--   Express
--   MongoDB
--   Vite
+
+-   React (Better than Vue)
+-   Express (For api and react build server)
+-   MongoDB (Accessed with mongoose)
+-   Vite (Crazy fast build speed)
+-   pnpm (Best package manager)
