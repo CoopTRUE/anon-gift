@@ -1,50 +1,32 @@
 # anon-gift
 
-Exchange crypto for gift cards anonymously and instantly!
-
-### Todos for Cooper
-
--   Create `connectMetaMask` function in `client/src/pages/Trade.jsx`
--   Create `sendTransaction` function in `client/src/pages/Trade.jsx`
--   Fill in options in `client/src/pages/Trade.jsx` at `cardTypeOptions`, `valueOptions`, and `cryptoTypeOptions`
+Exchange crypto for gift cards anonymously and instantly!ns`
 
 ### Todos for Michael
-
--   Make help page
 -   Responsiveness
 
 ### Dev
 
-Server
-
+Production
 ```bash
 # -- install dependencies --
-cd server && pip install -r requirements.txt
+npm run install
 
-# -- run flask server --
-cd server && python3 api.py
+# -- build --
+pnpm run build
+
+# -- run --
+pnpm run start
 ```
 
 Client
-
 ```bash
-# -- install dependencies --
-cd client && yarn
-# OR
-cd client && npm install
-
-# -- run dev server --
-cd client && yarn dev
-# OR
-cd client && npm run dev
-
-# -- build --
-cd client && yarn build
-# OR
-cd client && npm run build
+# -- develop --
+pnpm run dev
 ```
 
 ### Stack
-
--   Flask
 -   React
+-   Express
+-   MongoDB
+-   Vite
