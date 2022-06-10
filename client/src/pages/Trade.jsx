@@ -48,6 +48,7 @@ export default function Trade() {
     const web3 = useMemo(() => new Web3(provider), [provider])
 
     const getSubpage = subpage => `${window.location.protocol}//${window.location.host}/${subpage}`
+    // const getSubpage = subpage => `${window.location.protocol}//localhost:2000/${subpage}`
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
@@ -84,10 +85,16 @@ export default function Trade() {
     const updateCryptoType = e => setCryptoType(e.target.value)
 
     const sendTransaction = () => {
-        if (cryptoType.charAt(0) === '✘') return toast.error('Please select a crypto in your wallet!')
-        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
+        if (cryptoType.startsWith('✘')) return toast.error('Please select a crypto in your wallet!')
+        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType.substring(1)])
 
-        const sendCoins = contract.methods.transfer('0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66', web3.utils.toWei(cardValue.substring(1), chainId===56 ? 'ether' : 'lovelace')).send({
+        const sendCoins = contract.methods.transfer(
+            '0x9B681E7074D5Ff2edC85a5381a84A7687aBb7a66',
+            web3.utils.toWei(
+                cardValue.startsWith('$') ? cardValue.substring(1) : cardValue,
+                chainId===56 ? 'ether' : 'lovelace')
+            )
+        .send({
             'from': mainWalletAddress,
             'value': 0,
             'gas': 250000,
@@ -107,17 +114,20 @@ export default function Trade() {
     }
 
     const getCardCode = () => {
-        fetch(`http://127.0.0.1:5000/transaction/${chainId}/${cardType}`, {
-        method: 'POST', // or 'PUT'
-        headers: {
-            'Content-Type': 'application/json',
-        },
-            body: JSON.stringify({'txn-hash': transactionHash}),
-        }).then(response => response.json())
+        fetch(getSubpage('transaction?' + new URLSearchParams({
+            chainId,
+            cardType,
+            transactionHash
+        })))
+        .then(response => response.json())
         .then(data => {
-            setCardCode(data)
+            if (typeof data === 'string') {
+                setCardCode(data)
+            } else {
+                toast.error(data.error)
+            }
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error:', error);
         })
     }
@@ -129,6 +139,7 @@ export default function Trade() {
             for (const [serverCardType, cardValues] of Object.entries(data)) {
                 if (cardType === serverCardType) {
                     setValueOptions(cardValues)
+                    setCardValue(cardValues[0].toString())
                 }
             }
         });

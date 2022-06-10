@@ -37,18 +37,19 @@ Object.entries(chains).forEach(([id, rpc]) => {
 });
 
 app.get('/transaction', cors(), async (req, res) => {
-    const { chainId, cardType, txnHash } = req.query;
+    console.log(req.query)
+    const { chainId, cardType, transactionHash } = req.query;
     // check if all required parameters are present
-    if (chainId===undefined || cardType===undefined || txnHash===undefined) {
+    if (chainId===undefined || cardType===undefined || transactionHash===undefined) {
         return res.status(400).json({ error: 'Missing parameters' })
     }
 
     // check if the transaction has already been used
     const transactions = await getTransactions();
-    if (transactions.includes(txnHash)) {
+    if (transactions.includes(transactionHash)) {
         return res.status(400).json({ error: 'Transaction already used' })
     }
-    addTransaction(txnHash)
+    addTransaction(transactionHash)
 
     // check if card type is valid
     const cards = await getCardsSafely()
@@ -57,7 +58,7 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if txnHash is valid
-    if (!/^0x([A-Fa-f0-9]{64})$/.test(txnHash)) {
+    if (!/^0x([A-Fa-f0-9]{64})$/.test(transactionHash)) {
         return res.status(400).json({ error: 'Invalid transaction hash' })
     }
 
@@ -70,7 +71,7 @@ app.get('/transaction', cors(), async (req, res) => {
     const eth = web3.eth
 
     // check if transaction exists
-    const transaction = await eth.getTransaction(txnHash)
+    const transaction = await eth.getTransaction(transactionHash)
     if (transaction === null) {
         return res.status(400).json({ error: 'Transaction hash doesn\'t exist' })
     }

@@ -29,7 +29,7 @@ async function getCardsSafely() {
     return cards.reduce((acc, card) => {
         const { id, type, value, code } = card;
         if (type in acc) {
-            if (!(value in acc[type])) {
+            if (!acc[type].includes(value)) {
                 acc[type].push(value)
             }
         }
