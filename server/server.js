@@ -8,10 +8,7 @@ app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 
 // get database functions
-const { getCardsSafely, retrieveCard } = require('./db');
-
-// get giftcard model
-const Giftcard = require('./model')
+const { getCardsSafely, getTransactions, retrieveCard, addTransaction } = require('./db');
 
 // api
 app.get('/getAvailable', cors(), async (req, res) => {
@@ -45,6 +42,13 @@ app.get('/transaction', cors(), async (req, res) => {
     if (chainId===undefined || cardType===undefined || txnHash===undefined) {
         return res.status(400).json({ error: 'Missing parameters' })
     }
+
+    // check if the transaction has already been used
+    const transactions = await getTransactions();
+    if (transactions.includes(txnHash)) {
+        return res.status(400).json({ error: 'Transaction already used' })
+    }
+    addTransaction(txnHash)
 
     // check if card type is valid
     const cards = await getCardsSafely()

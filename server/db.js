@@ -7,7 +7,8 @@ async function connect(verbose=true) {
 }
 connect()
 
-const Giftcard = require('./model')
+const Giftcard = require('./models/giftcard')
+const Transaction = require('./models/transaction')
 
 async function addCard(type, value, code) {
     const giftcard = new Giftcard({type, value, code})
@@ -39,13 +40,25 @@ async function getCardsSafely() {
     }, {})
 }
 
+async function getTransactions() {
+    const transactions = await Transaction.find()
+    return transactions.map(transaction => transaction.hash)
+}
+
 async function retrieveCard(type, value) {
     const giftcard = await Giftcard.findOneAndDelete({type, value})
     return giftcard.code
-
 }
+
+async function addTransaction(hash) {
+    const transaction = new Transaction({hash})
+    await transaction.save()
+}
+
 module.exports = {
     'addCard': addCard,
+    'addTransaction': addTransaction,
     'getCardsSafely': getCardsSafely,
+    'getTransactions': getTransactions,
     'retrieveCard': retrieveCard
 }
