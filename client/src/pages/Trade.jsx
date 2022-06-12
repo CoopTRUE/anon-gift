@@ -31,8 +31,35 @@ export default function Trade() {
     const [mainWalletAddress, setMainWalletAddress] = useState('None')
     const [chainId, setChainId] = useState(0)
 
-    const [valueOptions, setValueOptions] = useState([])
-    const [cardOptions, setCardOptions] = useState([])
+    const mainPage = useMemo(() =>
+        `${process.env.NODE_ENV==='production' ? window.location.href : 'http://localhost:2000'}`
+    , [])
+
+    const [serverResponse, setServerResponse] = useState({})
+    const updateServerResponse = () => {
+        fetch(mainPage+'/getAvailable')
+            .then(response => response.json())
+            .then(setServerResponse)
+            .catch(toast.error)
+    }
+    useEffect(() => {
+        updateServerResponse()
+        setInterval(() => {
+            updateServerResponse()
+        }, 10000)
+    }, [])
+
+    const cardOptions = useMemo(() => Object.keys(serverResponse), [serverResponse])
+    const valueOptions = useMemo(() => {
+        for (const [serverCardType, cardValues] of Object.entries(serverResponse)) {
+            if (cardType === serverCardType) {
+                setCardValue(cardValues[0].toString())
+                return cardValues
+            }
+        }
+    }, [cardType])
+
+
     const [cryptoTypeOptions, setCryptoTypeOptions] = useState([])
     const updateCryptoTypeOptions = async (mainWalletAddress, chainId) => {
         setCryptoTypeOptions(await Promise.all(
@@ -47,13 +74,9 @@ export default function Trade() {
     const provider = useMemo(() => window.ethereum, [])
     const web3 = useMemo(() => new Web3(provider), [provider])
 
-    const getSubpage = subpage => `${process.env.NODE_ENV === 'production' ? window.location.protocol : 2000}//${window.location.host}/${subpage}`
-    // const getSubpage = subpage => `${window.location.protocol}//localhost:2000/${subpage}`
-
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
     const moveLeft = () => setRight(Math.max(right - 80, 0))
-
     const moveRight = () => setRight(Math.min(right + 80, 80 * 3))
 
     const connectMetaMask = () => {
@@ -66,7 +89,6 @@ export default function Trade() {
                 if (chainId in NETWORKS) {
                     setChainId(chainId)
                     setMainWalletAddress(accounts[0])
-                    updateCardOptions()
                     updateCryptoTypeOptions(accounts[0], chainId)
                 } else {
                     toast.error('Please connect to a supported network!')
@@ -77,7 +99,6 @@ export default function Trade() {
 
     const updateCardType = e => {
         setCardType(e.target.value)
-        updateCardValues(e.target.value)
     }
 
     const updateValue = e => setCardValue(e.target.value)
@@ -114,11 +135,11 @@ export default function Trade() {
     }
 
     const getCardCode = () => {
-        fetch(getSubpage('transaction?' + new URLSearchParams({
+        fetch(mainPage+'/transaction?'+ new URLSearchParams({
             chainId,
             cardType,
             transactionHash
-        })))
+        }))
         .then(response => response.json())
         .then(data => {
             if (typeof data === 'string') {
@@ -130,27 +151,6 @@ export default function Trade() {
         .catch(error => {
             console.error('Error:', error);
         })
-    }
-
-    const updateCardValues = (cardType) => {
-        fetch(getSubpage('getAvailable'))
-        .then(response => response.json())
-        .then(data => {
-            for (const [serverCardType, cardValues] of Object.entries(data)) {
-                if (cardType === serverCardType) {
-                    setValueOptions(cardValues)
-                    setCardValue(cardValues[0].toString())
-                }
-            }
-        });
-    }
-
-    const updateCardOptions = () => {
-        fetch(getSubpage('getAvailable'))
-        .then(response => response.json())
-        .then(data => (
-            setCardOptions(Object.keys(data))
-        ));
     }
 
     provider?.on('chainChanged', () => window.location.reload())
@@ -204,13 +204,13 @@ export default function Trade() {
                             </div>
                             <div className={styles.selectContainer}>
                                 <Selector
-                                    options={cardOptions}
+                                    options={cardOptions || []}
                                     callback={updateCardType}
                                 >
                                     Card Type
                                 </Selector>
                                 <Selector
-                                    options={valueOptions.map(value => '$'+value)}
+                                    options={valueOptions?.map(value => '$'+value) || []}
                                     callback={updateValue}
                                 >
                                     Value
@@ -275,7 +275,7 @@ export default function Trade() {
                         </div>
                     </div>
                     <ToastContainer
-                        position="top-right"
+                        position='top-right'
                         autoClose={3000}
                         hideProgressBar={false}
                         newestOnTop={false}
@@ -284,7 +284,7 @@ export default function Trade() {
                         pauseOnFocusLoss={false}
                         draggable={false}
                         pauseOnHover
-                        theme="colored"
+                        theme='colored'
                     />
                 </div>
             </div>

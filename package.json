@@ -5,6 +5,6 @@
         "start": "cd server && pnpm run start",
         "build": "cd client && pnpm run build",
         "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true",
-        "install-concurrently": "npm install -g concurrently"
+        "install-concurrently": "pnpm install concurrently"
     }
 }
