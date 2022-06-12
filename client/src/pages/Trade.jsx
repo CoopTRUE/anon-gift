@@ -31,8 +31,23 @@ export default function Trade() {
     const [mainWalletAddress, setMainWalletAddress] = useState('None')
     const [chainId, setChainId] = useState(0)
 
-    const [valueOptions, setValueOptions] = useState([])
-    const [cardOptions, setCardOptions] = useState([])
+    const mainPage = useMemo(() =>
+        `${process.env.NODE_ENV ? window.location.href : 'http://localhost:2000'}`
+    , [])
+
+    const [serverResponse, setServerResponse] = useState({})
+    useEffect(() => {
+        try {
+            setServerResponse(await fetch(mainPage+'/getAvailable'))
+        } catch (error) {
+            toast.error(error)
+        }
+    }, [])
+    const cardOptions = useMemo(() => [], [serverResponse])
+    const valueOptions = useMemo(() => [], [serverResponse])
+    // useEffect()
+
+
     const [cryptoTypeOptions, setCryptoTypeOptions] = useState([])
     const updateCryptoTypeOptions = async (mainWalletAddress, chainId) => {
         setCryptoTypeOptions(await Promise.all(
@@ -47,7 +62,7 @@ export default function Trade() {
     const provider = useMemo(() => window.ethereum, [])
     const web3 = useMemo(() => new Web3(provider), [provider])
 
-    const getSubpage = subpage => `${process.env.NODE_ENV === 'production' ? window.location.protocol : 2000}//${window.location.host}/${subpage}`
+    const getSubpage = subpage => `${process.env.NODE_ENV ? window.location.href : 'http://localhost:2000'}/${subpage}`
     // const getSubpage = subpage => `${window.location.protocol}//localhost:2000/${subpage}`
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
@@ -146,6 +161,7 @@ export default function Trade() {
     }
 
     const updateCardOptions = () => {
+        console.log(getSubpage('getAvailable'))
         fetch(getSubpage('getAvailable'))
         .then(response => response.json())
         .then(data => (
