@@ -30,9 +30,8 @@ export default function Trade() {
 
     const [mainWalletAddress, setMainWalletAddress] = useState('None')
     const [chainId, setChainId] = useState(0)
-
     const mainPage = useMemo(() =>
-        `${process.env.NODE_ENV==='production' ? window.location.href : 'http://localhost:2000'}`
+        `${window.location.protocol}//${window.location.hostname}:${process.env.NODE_ENV==='development' ? '2000' : window.location.port}`
     , [])
 
     const [serverResponse, setServerResponse] = useState({})
