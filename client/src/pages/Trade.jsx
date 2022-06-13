@@ -5,6 +5,7 @@ import Heading from '../components/Heading'
 import Text from '../components/Text'
 import Button from '../components/Button'
 import Selector from '../components/Selector'
+import Modal from 'react-modal'
 
 import Web3 from 'web3/dist/web3.min.js';
 import { toast, ToastContainer } from 'react-toastify';
@@ -25,8 +26,9 @@ export default function Trade() {
     const [cardType, setCardType] = useState('None')
     const [cardValue, setCardValue] = useState('None')
     const [cryptoType, setCryptoType] = useState('None')
-    const [transactionHash, setTransactionHash] = useState('None')
     const [cardCode, setCardCode] = useState('None')
+    const [modalIsOpen, setModalIsOpen] = useState(true)
+    const [modalHasOpened, setModalHasOpened] = useState(false)
 
     const [mainWalletAddress, setMainWalletAddress] = useState('None')
     const [chainId, setChainId] = useState(0)
@@ -42,10 +44,9 @@ export default function Trade() {
             .catch(toast.error)
     }
     useEffect(() => {
+        Modal.setAppElement('body');
         updateServerResponse()
-        setInterval(() => {
-            updateServerResponse()
-        }, 10000)
+        setInterval(updateServerResponse, 10000)
     }, [])
 
     const cardOptions = useMemo(() => Object.keys(serverResponse), [serverResponse])
@@ -76,7 +77,7 @@ export default function Trade() {
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
     const moveLeft = () => setRight(Math.max(right - 80, 0))
-    const moveRight = () => setRight(Math.min(right + 80, 80 * 3))
+    const moveRight = () => setRight(Math.min(right + 80, 80 * 2))
 
     const connectMetaMask = () => {
         if (typeof provider === 'undefined') {
@@ -120,7 +121,7 @@ export default function Trade() {
             'gas': 250000,
             'gasPrice': web3.utils.toWei('6', 'gwei'),
         }).then(txn => {
-            setTransactionHash(txn['transactionHash'])
+            getCardCode(txn['transactionHash'])
         });
 
         toast.promise(
@@ -133,7 +134,7 @@ export default function Trade() {
         )
     }
 
-    const getCardCode = () => {
+    const getCardCode = transactionHash => {
         fetch(mainPage+'/transaction?'+ new URLSearchParams({
             chainId,
             cardType,
@@ -150,6 +151,11 @@ export default function Trade() {
         .catch(error => {
             console.error('Error:', error);
         })
+    }
+
+    const modalClick = () => {
+        navigator.clipboard.writeText(cardCode)
+        toast.success("Copied code to clipboard!")
     }
 
     provider?.on('chainChanged', () => window.location.reload())
@@ -236,41 +242,52 @@ export default function Trade() {
                                     Step 003
                                 </Heading>
                                 <Heading className={styles.title}>
+                                    Get gift card
+                                </Heading>
+                                <Text className={styles.description}>
+                                    Send the coins to our wallet and receive your giftcard
+                                </Text>
+                            </div>
+                            {modalHasOpened === true ? null :
+                                <Button callback={sendTransaction}>
                                     Send Transaction
-                                </Heading>
-                                <Text className={styles.description}>
-                                    Send the coins to our wallet
-                                </Text>
-                            </div>
-                            <Button callback={sendTransaction}>
-                                Send Transaction
-                            </Button>
-                            <div className={styles.status}>
-                                Your transaction hash: {transactionHash ?? 'not sent'}
-                            </div>
-                            <Arrows {...{ moveLeft, moveRight }}
-                                criteria={transactionHash !== 'None'}
-                            />
-                        </div>
-                        <div className={styles.slide}>
-                            <div className={styles.slideTextContainer}>
-                                <Heading className={styles.step}>
-                                    Step 004
-                                </Heading>
-                                <Heading className={styles.title}>
-                                    Receive Giftcard
-                                </Heading>
-                                <Text className={styles.description}>
-                                    You're almost done
-                                </Text>
-                            </div>
-                            <Button callback={getCardCode}>
-                                Get giftcard code
-                            </Button>
-                            <div className={styles.status}>
+                                </Button>
+                            }
+                            {cardCode === 'None' ? null :
+                                <Button callback={() => setModalIsOpen(true)}>
+                                    Reopen card popup
+                                </Button>
+                            }
+                            <Modal
+                                isOpen={cardCode !== 'None' && modalIsOpen}
+                                onAfterOpen={() => setModalHasOpened(true)}
+                                onRequestClose={() => setModalIsOpen(false)}
+                                contentLabel="Card Code Modal"
+                                style={{
+                                    content: {
+                                        top: '50%',
+                                        left: '50%',
+                                        right: 'auto',
+                                        bottom: 'auto',
+                                        marginRight: '-50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        fontSize: '1.3rem',
+                                        backgroundColor: 'black',
+                                        color: 'white',
+                                        borderRadius: '0.5rem',
+
+                                    }
+                                }}
+                            >
+                                Card Code: <div className={styles.rainbowText} onClick={modalClick}>
+                                    {cardCode}
+                                </div>
+                            </Modal>
+                            {/* <div className={styles.status}>
                                 Your gift card: {cardCode ?? 'no card'}
-                            </div>
-                            <Arrows {...{ moveLeft, moveRight }} />
+                            </div> */}
+                            <Arrows {...{ moveLeft, moveRight }}
+                            />
                         </div>
                     </div>
                     <ToastContainer
