@@ -5,7 +5,6 @@ specifiers:
   react: ^18.1.0
   react-dom: ^18.1.0
   react-modal: ^3.15.1
-  react-model: ^4.2.1
   react-router-dom: ^6.3.0
   react-slide-routes: ^2.0.0
   react-toastify: ^9.0.4
@@ -18,7 +17,6 @@ dependencies:
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-modal: 3.15.1_ef5jwxihqo6n7gxfmzogljlgcm
-  react-model: 4.2.1_wfhvqiprmys65wyvbjfgd3t6zi
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-slide-routes: 2.0.0_vyja3uqpbiue7ncjxfu2izrpfq
   react-toastify: 9.0.4_ef5jwxihqo6n7gxfmzogljlgcm
@@ -2066,10 +2064,6 @@ packages:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: false
 
-  /immer/9.0.14:
-    resolution: {integrity: sha512-ubBeqQutOSLIFCUBN03jGeOS6a3DoYlSYwYJTa+gSKEZKU5redJIqkIdZ3JVv/4RZpfcXdAWH5zCNLWPRv2WDw==}
-    dev: false
-
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -2850,19 +2844,6 @@ packages:
       warning: 4.0.3
     dev: false
 
-  /react-model/4.2.1_wfhvqiprmys65wyvbjfgd3t6zi:
-    resolution: {integrity: sha512-vFHuIJW+AtSAHQSP9sWDf0B+NimBzvAiAhnJ+umZ/ipOk8hK0FQsRn0vglWeeZhdrfYF8Y0Xy6IDVG8WhhDUxg==}
-    peerDependencies:
-      react: '>=16.3.0'
-      react-dom: '>=16.3.0'
-      typescript: '>=3.9.0'
-    dependencies:
-      immer: 9.0.14
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      typescript: 4.7.3
-    dev: false
-
   /react-refresh/0.13.0:
     resolution: {integrity: sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==}
     engines: {node: '>=0.10.0'}
@@ -3324,12 +3305,6 @@ packages:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
     dependencies:
       is-typedarray: 1.0.0
-    dev: false
-
-  /typescript/4.7.3:
-    resolution: {integrity: sha512-WOkT3XYvrpXx4vMMqlD+8R8R37fZkjyLGlxavMc4iB8lrl8L0DeTcHbYgw/v0N/z9wAFsgBhcsF0ruoySS22mA==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
     dev: false
 
   /ultron/1.1.1:
