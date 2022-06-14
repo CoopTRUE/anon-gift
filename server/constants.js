@@ -2,8 +2,8 @@ module.exports = {
     serverWallet: '0x0367de624725fafca0e9953492ce8a0a7c0a05d9',
     chains: {
         56: 'https://bsc-dataseed.binance.org',
-        250: 'https://rpc.fantom.network',
-        43114: 'https://api.avax.network/ext/bc/C/rpc',
+        // 250: 'https://rpc.fantom.network',
+        // 43114: 'https://api.avax.network/ext/bc/C/rpc',
         // '1666600000': 'Harmony',
         // '137': 'Polygon'
     },
