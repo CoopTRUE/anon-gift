@@ -1,5 +1,5 @@
 export default {
-    56: "Binance Smart Chain",
+    56: ["Binance Smart Chain", "https://bsc-dataseed.binance.org"],
     // 250: "Fantom Opera",
     // 43114: "Avalanche",
     // "1666600000": "Harmony",

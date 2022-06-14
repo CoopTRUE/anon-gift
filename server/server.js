@@ -32,13 +32,16 @@ app.get('/getAvailable', cors(), async (req, res) => {
 
 
 // web3 stuff
-const { serverWallet, chains, coins, abi } = require('./constants');
+const serverWallet = require('./../constants/serverWallet').default;
+const chains = require('./../constants/chains').default;
+const coins = require('./../constants/coins').default;
+const abi = require('./../constants/abi.json');
 const Web3 = require('web3');
 
 // create web3 instances prematurely to avoid slowdown on individual requests
 web3Instances = {}
-Object.entries(chains).forEach(([id, rpc]) => {
-    web3Instances[id] = new Web3(new Web3.providers.HttpProvider(rpc));
+Object.entries(chains).forEach(([id, nameRpc]) => {
+    web3Instances[id] = new Web3(new Web3.providers.HttpProvider(nameRpc[1]));
 });
 
 app.get('/transaction', cors(), async (req, res) => {
@@ -83,7 +86,7 @@ app.get('/transaction', cors(), async (req, res) => {
 
     // check if transaction interacts with a valid contract
     const contract_address = transaction.to
-    if (!coins[chainId].includes(contract_address)) {
+    if (!Object.values(coins[chainId]).includes(contract_address)) {
         return res.status(400).json({ error: 'Transaction hash doesn\'t interact with a valid contract' })
     }
 

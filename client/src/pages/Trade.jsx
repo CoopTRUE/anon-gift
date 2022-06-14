@@ -11,9 +11,9 @@ import Web3 from 'web3/dist/web3.min.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import NETWORKS from '../constants/networks.js'
-import COINS from '../constants/coins.js'
-import ABI from '../constants/abi.json'
+import CHAINS from '../../../constants/chains'
+import COINS from '../../../constants/coins'
+import ABI from '../../../constants/abi.json'
 
 export default function Trade() {
     // un-comment this on production
@@ -86,7 +86,7 @@ export default function Trade() {
         provider.request({ method: 'eth_requestAccounts' }).then((accounts) => {
             provider.request({ method: 'eth_chainId' }).then((chainId) => {
                 chainId*=1 // convert to string
-                if (chainId in NETWORKS) {
+                if (chainId in CHAINS) {
                     setChainId(chainId)
                     setMainWalletAddress(accounts[0])
                     updateCryptoTypeOptions(accounts[0], chainId)
