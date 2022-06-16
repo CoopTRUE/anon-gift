@@ -1,9 +1,8 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-
-console.log(process.argv)
 const app = express();
+
 app.enable('trust proxy')
 if (process.env.NODE_ENV === 'production') {
     app.use((req, res, next) => {
@@ -12,13 +11,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-
 // get database functions
 const { getCardsSafely, getTransactions, retrieveCard, addTransaction } = require('./db');
 
 // api
 app.get('/getAvailable', cors(), async (req, res) => {
-    /* returns giftcards and values
+    /* returns gift cards and values
     {
         card type: [
             value,
@@ -53,11 +51,11 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if the transaction has already been used
-    // const transactions = await getTransactions();
-    // if (transactions.includes(transactionHash)) {
-    //     return res.status(400).json({ error: 'Transaction already used' })
-    // }
-    // addTransaction(transactionHash)
+    const transactions = await getTransactions();
+    if (transactions.includes(transactionHash)) {
+        return res.status(400).json({ error: 'Transaction already used' })
+    }
+    addTransaction(transactionHash)
 
     // check if card type is valid
     const cards = await getCardsSafely()

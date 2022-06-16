@@ -15,8 +15,9 @@ function ask(question) {
 
 async function newCard(){
     await db.addCard(
+        (await ask('Fake: ')) === 'true',
         await ask('Type: '),
-        await ask('Value: '),
+        parseInt(await ask('Value: ')),
         await ask('Code: ')
     )
     console.log('Card added')

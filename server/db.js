@@ -5,18 +5,19 @@ async function connect(verbose=true) {
     await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
     if (verbose) console.log('Connected to MongoDB');
 }
-connect()
+connect(!process.argv[1].endsWith('newCard.js'))
 
-const Giftcard = require('./models/giftcard')
+const GiftCard = require('./models/giftCard')
 const Transaction = require('./models/transaction')
+const fake = process.argv.includes('fakeCards');
 
-async function addCard(type, value, code) {
-    const giftcard = new Giftcard({type, value, code})
-    await giftcard.save()
+async function addCard(fake, type, value, code) {
+    const giftCard = new GiftCard({ fake, type, value, code })
+    await giftCard.save()
 }
 
-async function getCardsSafely(isFake) {
-    /* returns giftcards and values
+async function getCardsSafely() {
+    /* returns gift cards and values
     {
         card name: [
             value,
@@ -25,9 +26,9 @@ async function getCardsSafely(isFake) {
         ...
     }
     */
-    const cards = await Giftcard.find()
+    const cards = await GiftCard.find({ fake })
     return cards.reduce((acc, card) => {
-        const { id, type, value, code, isFake } = card;
+        const { id, fake, type, value, code } = card;
         if (type in acc) {
             if (!acc[type].includes(value)) {
                 acc[type].push(value)
@@ -45,13 +46,13 @@ async function getTransactions() {
     return transactions.map(transaction => transaction.hash)
 }
 
-async function retrieveCard(type, value, fake) {
-    const giftcard = await Giftcard.findOneAndDelete({type, value, fake})
-    return giftcard.code
+async function retrieveCard(type, value) {
+    const giftCard = await GiftCard.findOneAndDelete({ fake, type, value })
+    return giftCard.code
 }
 
 async function addTransaction(hash) {
-    const transaction = new Transaction({hash})
+    const transaction = new Transaction({ hash })
     await transaction.save()
 }
 
