@@ -105,7 +105,7 @@ export default function Trade() {
 
     const updateCryptoType = e => setCryptoType(e.target.value)
 
-    const sendTransaction = () => {
+    const sendTransaction = async() => {
         if (cryptoType.startsWith('✘')) return toast.error('Please select a crypto in your wallet!')
         const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType.substring(1)])
 
@@ -113,19 +113,18 @@ export default function Trade() {
             '0x0367De624725fAfCA0e9953492ce8A0a7C0A05D9',
             web3.utils.toWei(
                 cardValue.startsWith('$') ? cardValue.substring(1) : cardValue,
-                chainId===56 ? 'ether' : 'lovelace')
+                // chainId===56 ? 'ether' : 'lovelace'
+                CHAINS[chainId][2]
             )
-        .send({
-            'from': mainWalletAddress,
-            'value': 0,
-            'gas': 250000,
-            'gasPrice': web3.utils.toWei('6', 'gwei'),
-        }).then(txn => {
-            getCardCode(txn['transactionHash'])
-        });
-
+        )
         toast.promise(
-            sendCoins,
+            sendCoins.send({
+                'from': mainWalletAddress,
+                'value': 0,
+                'gas': await sendCoins.estimateGas({from: mainWalletAddress})
+            }).then(txn => {
+                getCardCode(txn['transactionHash'])
+            }),
             {
               pending: 'Transaction Sent!😂',
               success: 'Transaction confirmed🥶🥶',

@@ -13,8 +13,6 @@ function ask(question) {
     });
 }
 
-const Giftcard = require('./models/giftcard')
-
 async function newCard(){
     await db.addCard(
         await ask('Type: '),

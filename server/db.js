@@ -15,7 +15,7 @@ async function addCard(type, value, code) {
     await giftcard.save()
 }
 
-async function getCardsSafely() {
+async function getCardsSafely(isFake) {
     /* returns giftcards and values
     {
         card name: [
@@ -27,7 +27,7 @@ async function getCardsSafely() {
     */
     const cards = await Giftcard.find()
     return cards.reduce((acc, card) => {
-        const { id, type, value, code } = card;
+        const { id, type, value, code, isFake } = card;
         if (type in acc) {
             if (!acc[type].includes(value)) {
                 acc[type].push(value)
@@ -45,8 +45,8 @@ async function getTransactions() {
     return transactions.map(transaction => transaction.hash)
 }
 
-async function retrieveCard(type, value) {
-    const giftcard = await Giftcard.findOneAndDelete({type, value})
+async function retrieveCard(type, value, fake) {
+    const giftcard = await Giftcard.findOneAndDelete({type, value, fake})
     return giftcard.code
 }
 

@@ -1,6 +1,7 @@
 {
     "scripts": {
         "install": "npm run install-pnpm && pnpm run install-concurrently && cd server && pnpm install && cd ../client && pnpm install",
+        "devReal": "concurrently --kill-others \"cd client && pnpm run dev -- real\" \"pnpm run start -- real\"",
         "dev": "concurrently --kill-others \"cd client && pnpm run dev\" \"pnpm run start\"",
         "start": "cd server && pnpm run start",
         "build": "cd client && pnpm run build",
