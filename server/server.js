@@ -5,12 +5,12 @@ const app = express();
 
 const inProduction = process.env.NODE_ENV === 'production';
 
-app.enable('trust proxy')
-if (inProduction) {
-    app.use((req, res, next) => {
-        req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
-    })
-}
+// app.enable('trust proxy')
+// if (inProduction) {
+//     app.use((req, res, next) => {
+//         req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
+//     })
+// }
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 // get database functions
