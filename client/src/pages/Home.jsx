@@ -46,7 +46,7 @@ export default function Home() {
                     </Heading>
                     <Text className={styles.aboutText}>
                         Anon Gift is 100% safe, secure, and anonymous. Our code is open source on github and runs completely autonomously.
-                        We do not collect or log any user data.
+                        We do not sell user data and only log basic transaction information like time of purchase.
                     </Text>
                 </div>
                 <div className={styles.innerAboutContainer}>

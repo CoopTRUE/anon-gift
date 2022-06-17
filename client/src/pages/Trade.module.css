@@ -143,3 +143,7 @@
     opacity: 0.5;
     cursor: pointer;
 }
+
+.modalFooter {
+    font-size: 0.9rem !important;
+}

@@ -1,24 +1,24 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-
-
 const app = express();
+
+const inProduction = process.env.NODE_ENV === 'production';
+
 app.enable('trust proxy')
-if (process.env.NODE_ENV === 'production') {
+if (inProduction) {
     app.use((req, res, next) => {
         req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
     })
 }
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-
 // get database functions
 const { getCardsSafely, getTransactions, retrieveCard, addTransaction } = require('./db');
 
 // api
 app.get('/getAvailable', cors(), async (req, res) => {
-    /* returns giftcards and values
+    /* returns gift cards and values
     {
         card type: [
             value,
@@ -32,13 +32,16 @@ app.get('/getAvailable', cors(), async (req, res) => {
 
 
 // web3 stuff
-const { serverWallet, chains, coins, abi } = require('./constants');
+const SERVER_WALLET = require('./../constants/serverWallet').default;
+const CHAINS = require('./../constants/chains').default;
+const COINS = require('./../constants/coins').default;
+const ABI = require('./../constants/abi.json');
 const Web3 = require('web3');
 
 // create web3 instances prematurely to avoid slowdown on individual requests
 web3Instances = {}
-Object.entries(chains).forEach(([id, rpc]) => {
-    web3Instances[id] = new Web3(new Web3.providers.HttpProvider(rpc));
+Object.entries(CHAINS).forEach(([id, nameRpc]) => {
+    web3Instances[id] = new Web3(new Web3.providers.HttpProvider(nameRpc[1]));
 });
 
 app.get('/transaction', cors(), async (req, res) => {
@@ -50,11 +53,13 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if the transaction has already been used
-    const transactions = await getTransactions();
-    if (transactions.includes(transactionHash)) {
-        return res.status(400).json({ error: 'Transaction already used' })
+    if (inProduction) {
+        const transactions = await getTransactions();
+        if (transactions.includes(transactionHash)) {
+            return res.status(400).json({ error: 'Transaction already used' })
+        }
+        addTransaction(transactionHash)
     }
-    addTransaction(transactionHash)
 
     // check if card type is valid
     const cards = await getCardsSafely()
@@ -68,7 +73,7 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if chainId is valid
-    if (!(chainId in chains)) {
+    if (!(chainId in CHAINS)) {
         return res.status(400).json({ error: 'Invalid chain id' })
     }
 
@@ -83,23 +88,23 @@ app.get('/transaction', cors(), async (req, res) => {
 
     // check if transaction interacts with a valid contract
     const contract_address = transaction.to
-    if (!coins[chainId].includes(contract_address)) {
+    if (!Object.values(COINS[chainId]).includes(contract_address)) {
         return res.status(400).json({ error: 'Transaction hash doesn\'t interact with a valid contract' })
     }
 
     // decode dat abi
     const abiDecoder = require('abi-decoder')
-    abiDecoder.addABI(abi);
+    abiDecoder.addABI(ABI);
     const transactionParams = abiDecoder.decodeMethod(transaction.input).params
     // check if transaction is to the server wallet
-    if (transactionParams[0].value !== serverWallet) {
+    if (transactionParams[0].value !== SERVER_WALLET) {
         return res.status(400).json({ error: 'Transaction is not to the server wallet' })
     }
 
     // check if transaction is a valid amount
-    const value = parseInt(web3.utils.fromWei(transactionParams[1].value, chainId ? 'ether' : 'lovelace'))
+    const value = parseInt(web3.utils.fromWei(transactionParams[1].value, CHAINS[chainId][2]))
     if (!cards[cardType].includes(value)) {
-        return res.status(400).json({ error: `Transaction value is not a valid amount: ${cards[cardType]}` })
+        return res.status(400).json({ error: `Transaction value ${value} is not a valid amount: ${cards[cardType]}` })
     }
 
     return res.json(await retrieveCard(cardType, value))

@@ -1,9 +1,11 @@
 {
     "scripts": {
         "install": "npm run install-pnpm && pnpm run install-concurrently && cd server && pnpm install && cd ../client && pnpm install",
+        "devFake": "concurrently --kill-others \"cd client && pnpm run dev\" \"pnpm run start -- fakeCards\"",
         "dev": "concurrently --kill-others \"cd client && pnpm run dev\" \"pnpm run start\"",
         "start": "cd server && pnpm run start",
         "build": "cd client && pnpm run build",
+        "newcard": "cd server && pnpm run newcard",
         "install-pnpm": "npm install -g pnpm && pnpm config set auto-install-peers true",
         "install-concurrently": "pnpm install concurrently"
     }

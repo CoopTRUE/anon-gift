@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import styles from './Trade.module.css'
 
 import Heading from '../components/Heading'
@@ -11,9 +11,10 @@ import Web3 from 'web3/dist/web3.min.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import NETWORKS from '../constants/networks.js'
-import COINS from '../constants/coins.js'
-import ABI from '../constants/abi.json'
+import CHAINS from '../../../constants/chains'
+import COINS from '../../../constants/coins'
+import ABI from '../../../constants/abi.json'
+import SERVER_WALLET from '../../../constants/serverWallet'
 
 export default function Trade() {
     // un-comment this on production
@@ -47,13 +48,14 @@ export default function Trade() {
         Modal.setAppElement('body');
         updateServerResponse()
         setInterval(updateServerResponse, 10000)
+        provider?.on('chainChanged', () => window.location.reload())
     }, [])
 
     const cardOptions = useMemo(() => Object.keys(serverResponse), [serverResponse])
     const valueOptions = useMemo(() => {
         for (const [serverCardType, cardValues] of Object.entries(serverResponse)) {
             if (cardType === serverCardType) {
-                setCardValue(cardValues[0].toString())
+                setCardValue(cardValues[0])
                 return cardValues
             }
         }
@@ -70,9 +72,8 @@ export default function Trade() {
             })
         ))
     }
-
     const provider = useMemo(() => window.ethereum, [])
-    const web3 = useMemo(() => new Web3(provider), [provider])
+    const web3 = useMemo(() => new Web3(provider, { transactionBlockTimeout: 9999 }), [provider])
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
@@ -86,7 +87,7 @@ export default function Trade() {
         provider.request({ method: 'eth_requestAccounts' }).then((accounts) => {
             provider.request({ method: 'eth_chainId' }).then((chainId) => {
                 chainId*=1 // convert to string
-                if (chainId in NETWORKS) {
+                if (chainId in CHAINS) {
                     setChainId(chainId)
                     setMainWalletAddress(accounts[0])
                     updateCryptoTypeOptions(accounts[0], chainId)
@@ -97,35 +98,50 @@ export default function Trade() {
         })
     }
 
-    const updateCardType = e => {
-        setCardType(e.target.value)
+    const updateCardType = cardType => {
+        setCardType(cardType)
+        setCardValue('None')
     }
 
-    const updateValue = e => setCardValue(e.target.value)
+    const updateCardValue = cardValue => {
+        if (cardValue !== 'None') {
+            cardValue = parseInt(cardValue.substring(1))
+        }
+        setCardValue(cardValue)
+    }
 
-    const updateCryptoType = e => setCryptoType(e.target.value)
+    const updateCryptoType = cryptoType => {
+        if (cryptoType === 'None') {
+            setCryptoType(cryptoType)
+        }
+        else if (cryptoType.startsWith('✔')) {
+            setCryptoType(cryptoType.substring(1))
+        } else {
+            setCryptoType("NOT AVAILABLE")
+        }
+    }
 
-    const sendTransaction = () => {
-        if (cryptoType.startsWith('✘')) return toast.error('Please select a crypto in your wallet!')
-        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType.substring(1)])
+    const sendTransaction = async() => {
+        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
 
         const sendCoins = contract.methods.transfer(
-            '0x0367De624725fAfCA0e9953492ce8A0a7C0A05D9',
+            SERVER_WALLET,
             web3.utils.toWei(
-                cardValue.startsWith('$') ? cardValue.substring(1) : cardValue,
-                chainId===56 ? 'ether' : 'lovelace')
+                cardValue.toString(),
+                CHAINS[chainId][2]
             )
-        .send({
-            'from': mainWalletAddress,
-            'value': 0,
-            'gas': 250000,
-            'gasPrice': web3.utils.toWei('6', 'gwei'),
-        }).then(txn => {
-            getCardCode(txn['transactionHash'])
-        });
-
+        )
         toast.promise(
-            sendCoins,
+            sendCoins.send({
+                from: mainWalletAddress,
+                value: 0,
+                // gasLimit: (await web3.eth.getBlock("latest").gasLimit)*2,
+                // gas: await sendCoins.estimateGas({ from: mainWalletAddress })*2,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            }).then(txn => {
+                getCardCode(txn['transactionHash'])
+            }),
             {
               pending: 'Transaction Sent!😂',
               success: 'Transaction confirmed🥶🥶',
@@ -158,8 +174,6 @@ export default function Trade() {
         toast.success("Copied code to clipboard!")
     }
 
-    provider?.on('chainChanged', () => window.location.reload())
-
     // TODO: add network selector
     return (
         <div className={styles.container}>
@@ -190,8 +204,8 @@ export default function Trade() {
                                 Status: {(mainWalletAddress==='None' ? 'not ' : '') + 'connected'}
                             </div>
                             <Arrows
-                                {...{ moveLeft, moveRight }}
-                                criteria={mainWalletAddress!=='None'}
+                                {...{ moveRight }}
+                                requirements={[ [mainWalletAddress!=='None', "Please connect to MetaMask!"] ]}
                             />
                         </div>
                         <div className={styles.slide}>
@@ -216,7 +230,7 @@ export default function Trade() {
                                 </Selector>
                                 <Selector
                                     options={valueOptions?.map(value => '$'+value) || []}
-                                    callback={updateValue}
+                                    callback={updateCardValue}
                                 >
                                     Value
                                 </Selector>
@@ -229,11 +243,12 @@ export default function Trade() {
                             </div>
                             <Arrows
                                 {...{ moveLeft, moveRight }}
-                                criteria={
-                                    cardType !== 'None' &&
-                                    cardValue !== 'None' &&
-                                    cryptoType !== 'None'
-                                }
+                                requirements={[
+                                    [cardType !== 'None',  'Please select a card type!'],
+                                    [cardValue !== 'None', 'Please select a value!'],
+                                    [cryptoType !== 'None', 'Please select a crypto type!'],
+                                    [cryptoType !== 'NOT AVAILABLE', 'Please select a crypto in your wallet!']
+                                ]}
                             />
                         </div>
                         <div className={styles.slide}>
@@ -245,7 +260,7 @@ export default function Trade() {
                                     Get gift card
                                 </Heading>
                                 <Text className={styles.description}>
-                                    Send the coins to our wallet and receive your giftcard
+                                    Send the coins to our wallet and receive your gift card
                                 </Text>
                             </div>
                             {modalHasOpened === true ? null :
@@ -271,22 +286,27 @@ export default function Trade() {
                                         bottom: 'auto',
                                         marginRight: '-50%',
                                         transform: 'translate(-50%, -50%)',
-                                        fontSize: '1.3rem',
+                                        fontSize: '2rem',
                                         backgroundColor: 'black',
                                         color: 'white',
                                         borderRadius: '0.5rem',
-
+                                        textAlign: 'center',
+                                        padding: '0 3rem 0 3rem',
                                     }
                                 }}
                             >
-                                Card Code: <div className={styles.rainbowText} onClick={modalClick}>
+                                Card Code:
+                                <div className={styles.modalFooter}>Click to copy!</div>
+                                <div className={styles.rainbowText} onClick={modalClick}>
                                     {cardCode}
                                 </div>
                             </Modal>
                             {/* <div className={styles.status}>
                                 Your gift card: {cardCode ?? 'no card'}
                             </div> */}
-                            <Arrows {...{ moveLeft, moveRight }}
+                            <Arrows
+                                {...{ moveLeft}}
+                                requirements={[]}
                             />
                         </div>
                     </div>
@@ -308,19 +328,31 @@ export default function Trade() {
     )
 }
 
-function Arrows({ moveLeft, moveRight, criteria }) {
-    const moveRightWithCriteria = () => {
-        if (criteria) moveRight()
+function Arrows({ moveLeft, moveRight, requirements}) {
+    const requirementsMet = useCallback((enableToast=false) => {
+        return requirements.every(([condition, message]) =>
+            condition || !(!enableToast || toast.error(message))
+        )
+    }, [requirements])
+
+    const moveRightWithRequirements = () => {
+        if (requirementsMet(true)) {
+            moveRight()
+        }
     }
 
     return (
         <div className={styles.arrowContainer}>
-            <div className={styles.arrow} onClick={moveLeft}>
-                {'← go back'}
-            </div>
-            <div className={criteria ? styles.arrowOn : styles.arrow} onClick={moveRightWithCriteria}>
-                {'continue →'}
-            </div>
+            {moveLeft !== undefined ?
+                <div className={styles.arrow} onClick={moveLeft}>
+                    {'← go back'}
+                </div>
+            : null}
+            {moveRight !== undefined ?
+                <div className={requirementsMet() ? styles.arrowOn : styles.arrow} onClick={moveRightWithRequirements}>
+                    {'continue →'}
+                </div>
+            : null}
         </div>
     )
 }
