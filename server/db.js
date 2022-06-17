@@ -47,7 +47,12 @@ async function getTransactions() {
 }
 
 async function retrieveCard(type, value) {
-    const giftCard = await GiftCard.findOneAndDelete({ fake, type, value })
+    let giftCard;
+    if (process.env.NODE_ENV === 'production') {
+        giftCard = await GiftCard.findOneAndDelete({ fake, type, value })
+    } else {
+        giftCard = await GiftCard.findOne({ fake, type, value })
+    }
     return giftCard.code
 }
 

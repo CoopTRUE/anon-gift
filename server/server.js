@@ -3,8 +3,10 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
+const inProduction = process.env.NODE_ENV === 'production';
+
 app.enable('trust proxy')
-if (process.env.NODE_ENV === 'production') {
+if (inProduction) {
     app.use((req, res, next) => {
         req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
     })
@@ -51,11 +53,13 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if the transaction has already been used
-    const transactions = await getTransactions();
-    if (transactions.includes(transactionHash)) {
-        return res.status(400).json({ error: 'Transaction already used' })
+    if (inProduction) {
+        const transactions = await getTransactions();
+        if (transactions.includes(transactionHash)) {
+            return res.status(400).json({ error: 'Transaction already used' })
+        }
+        addTransaction(transactionHash)
     }
-    addTransaction(transactionHash)
 
     // check if card type is valid
     const cards = await getCardsSafely()
