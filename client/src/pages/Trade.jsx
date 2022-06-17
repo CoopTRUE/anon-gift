@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CHAINS from '../../../constants/chains'
 import COINS from '../../../constants/coins'
 import ABI from '../../../constants/abi.json'
+import SERVER_WALLET from '../../../constants/serverWallet'
 
 export default function Trade() {
     // un-comment this on production
@@ -71,9 +72,8 @@ export default function Trade() {
             })
         ))
     }
-
     const provider = useMemo(() => window.ethereum, [])
-    const web3 = useMemo(() => new Web3(provider), [provider])
+    const web3 = useMemo(() => new Web3(provider, { transactionBlockTimeout: 9999 }), [provider])
 
     const reelStyle = useMemo(() => ({ right: right + 'vw' }), [right])
 
@@ -121,13 +121,11 @@ export default function Trade() {
         }
     }
 
-    console.log(cardType, cardValue, cryptoType)
-
     const sendTransaction = async() => {
         const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
 
         const sendCoins = contract.methods.transfer(
-            '0x0367De624725fAfCA0e9953492ce8A0a7C0A05D9',
+            SERVER_WALLET,
             web3.utils.toWei(
                 cardValue.toString(),
                 CHAINS[chainId][2]
@@ -135,9 +133,12 @@ export default function Trade() {
         )
         toast.promise(
             sendCoins.send({
-                'from': mainWalletAddress,
-                'value': 0,
-                'gas': await sendCoins.estimateGas({ from: mainWalletAddress })
+                from: mainWalletAddress,
+                value: 0,
+                // gasLimit: (await web3.eth.getBlock("latest").gasLimit)*2,
+                // gas: await sendCoins.estimateGas({ from: mainWalletAddress })*2,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
             }).then(txn => {
                 getCardCode(txn['transactionHash'])
             }),
