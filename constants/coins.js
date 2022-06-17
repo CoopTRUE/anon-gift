@@ -5,7 +5,7 @@ export default {
         USDT: '0x55d398326f99059fF775485246999027B3197955'
     },
     250: {// Fantom Opera
-        MIM: '0x82f0B8B456c1A451378467398982d4834b6829c1',
+        // MIM: '0x82f0B8B456c1A451378467398982d4834b6829c1',  // MIM value is in different measurement unit (still need to fix)
         USDC: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
         fUSDT: '0x049d68029688eAbF473097a2fC38ef61633A3C7A'
     },
