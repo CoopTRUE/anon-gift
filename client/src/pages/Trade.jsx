@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CHAINS from './../constants/chains'
 import COINS from './../constants/coins'
 import ABI from './../constants/abi.json'
-import SERVER_WALLET from './../constants/serverWallet'
+import SERVER_WALLET from './../constants/serverwallet'
 
 export default function Trade() {
     // un-comment this on production
