@@ -13,7 +13,7 @@ export default function Selector({
     return (
         <div className={styles.container}>
             <Text className={styles.label}>{children}</Text>
-            <select className={styles.select} onChange={callback}>
+            <select className={styles.select} onChange={self => callback(self.target.value)}>
                 {editedOptions.map((op, i) => {
                     return (
                         <option key={i} className={styles.option}>

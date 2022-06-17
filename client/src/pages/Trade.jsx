@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import styles from './Trade.module.css'
 
 import Heading from '../components/Heading'
@@ -53,7 +53,7 @@ export default function Trade() {
     const valueOptions = useMemo(() => {
         for (const [serverCardType, cardValues] of Object.entries(serverResponse)) {
             if (cardType === serverCardType) {
-                setCardValue(cardValues[0].toString())
+                setCardValue(cardValues[0])
                 return cardValues
             }
         }
@@ -97,13 +97,28 @@ export default function Trade() {
         })
     }
 
-    const updateCardType = e => {
-        setCardType(e.target.value)
+    const updateCardType = cardType => {
+        setCardType(cardType)
+        setCardValue('None')
     }
 
-    const updateValue = e => setCardValue(e.target.value)
+    const updateCardValue = cardValue => {
+        if (cardValue !== 'None') {
+            cardValue = parseInt(cardValue.substring(1))
+        }
+        setCardValue(cardValue)
+    }
 
-    const updateCryptoType = e => setCryptoType(e.target.value)
+    const updateCryptoType = cryptoType => {
+        if (cryptoType === 'None') {
+            setCryptoType(cryptoType)
+        }
+        else if (cryptoType.startsWith('✔')) {
+            setCryptoType(cryptoType.substring(1))
+        } else {
+            setCryptoType("NOT AVAILABLE")
+        }
+    }
 
     const sendTransaction = async() => {
         if (cryptoType.startsWith('✘')) return toast.error('Please select a crypto in your wallet!')
@@ -189,8 +204,8 @@ export default function Trade() {
                                 Status: {(mainWalletAddress==='None' ? 'not ' : '') + 'connected'}
                             </div>
                             <Arrows
-                                {...{ moveLeft, moveRight }}
-                                criteria={mainWalletAddress!=='None'}
+                                {...{ moveRight }}
+                                requirements={[ [mainWalletAddress!=='None', "Please connect to MetaMask!"] ]}
                             />
                         </div>
                         <div className={styles.slide}>
@@ -215,7 +230,7 @@ export default function Trade() {
                                 </Selector>
                                 <Selector
                                     options={valueOptions?.map(value => '$'+value) || []}
-                                    callback={updateValue}
+                                    callback={updateCardValue}
                                 >
                                     Value
                                 </Selector>
@@ -228,11 +243,12 @@ export default function Trade() {
                             </div>
                             <Arrows
                                 {...{ moveLeft, moveRight }}
-                                criteria={
-                                    cardType !== 'None' &&
-                                    cardValue !== 'None' &&
-                                    cryptoType !== 'None'
-                                }
+                                requirements={[
+                                    [cardType !== 'None',  'Please select a card type!'],
+                                    [cardValue !== 'None', 'Please select a value!'],
+                                    [cryptoType !== 'None', 'Please select a crypto type!'],
+                                    [cryptoType !== 'NOT AVAILABLE', 'Please select a crypto in your wallet!']
+                                ]}
                             />
                         </div>
                         <div className={styles.slide}>
@@ -285,7 +301,9 @@ export default function Trade() {
                             {/* <div className={styles.status}>
                                 Your gift card: {cardCode ?? 'no card'}
                             </div> */}
-                            <Arrows {...{ moveLeft, moveRight }}
+                            <Arrows
+                                {...{ moveLeft}}
+                                requirements={[]}
                             />
                         </div>
                     </div>
@@ -307,19 +325,31 @@ export default function Trade() {
     )
 }
 
-function Arrows({ moveLeft, moveRight, criteria }) {
-    const moveRightWithCriteria = () => {
-        if (criteria) moveRight()
+function Arrows({ moveLeft, moveRight, requirements}) {
+    const requirementsMet = useCallback((enableToast=false) => {
+        return requirements.every(([condition, message]) =>
+        condition || !(!enableToast || toast.error(message))
+    )
+    }, [requirements])
+
+    const moveRightWithRequirements = () => {
+        if (requirementsMet(true)) {
+            moveRight()
+        }
     }
 
     return (
         <div className={styles.arrowContainer}>
-            <div className={styles.arrow} onClick={moveLeft}>
-                {'← go back'}
-            </div>
-            <div className={criteria ? styles.arrowOn : styles.arrow} onClick={moveRightWithCriteria}>
-                {'continue →'}
-            </div>
+            {moveLeft !== undefined ?
+                <div className={styles.arrow} onClick={moveLeft}>
+                    {'← go back'}
+                </div>
+            : null}
+            {moveRight !== undefined ?
+                <div className={requirementsMet() ? styles.arrowOn : styles.arrow} onClick={moveRightWithRequirements}>
+                    {'continue →'}
+                </div>
+            : null}
         </div>
     )
 }
