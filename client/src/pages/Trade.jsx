@@ -47,6 +47,7 @@ export default function Trade() {
         Modal.setAppElement('body');
         updateServerResponse()
         setInterval(updateServerResponse, 10000)
+        provider?.on('chainChanged', () => window.location.reload())
     }, [])
 
     const cardOptions = useMemo(() => Object.keys(serverResponse), [serverResponse])
@@ -120,15 +121,15 @@ export default function Trade() {
         }
     }
 
+    console.log(cardType, cardValue, cryptoType)
+
     const sendTransaction = async() => {
-        if (cryptoType.startsWith('✘')) return toast.error('Please select a crypto in your wallet!')
-        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType.substring(1)])
+        const contract = new web3.eth.Contract(ABI, COINS[chainId][cryptoType])
 
         const sendCoins = contract.methods.transfer(
             '0x0367De624725fAfCA0e9953492ce8A0a7C0A05D9',
             web3.utils.toWei(
-                cardValue.startsWith('$') ? cardValue.substring(1) : cardValue,
-                // chainId===56 ? 'ether' : 'lovelace'
+                cardValue.toString(),
                 CHAINS[chainId][2]
             )
         )
@@ -136,7 +137,7 @@ export default function Trade() {
             sendCoins.send({
                 'from': mainWalletAddress,
                 'value': 0,
-                'gas': await sendCoins.estimateGas({from: mainWalletAddress})
+                'gas': await sendCoins.estimateGas({ from: mainWalletAddress })
             }).then(txn => {
                 getCardCode(txn['transactionHash'])
             }),
@@ -171,8 +172,6 @@ export default function Trade() {
         navigator.clipboard.writeText(cardCode)
         toast.success("Copied code to clipboard!")
     }
-
-    provider?.on('chainChanged', () => window.location.reload())
 
     // TODO: add network selector
     return (
@@ -286,15 +285,18 @@ export default function Trade() {
                                         bottom: 'auto',
                                         marginRight: '-50%',
                                         transform: 'translate(-50%, -50%)',
-                                        fontSize: '1.3rem',
+                                        fontSize: '2rem',
                                         backgroundColor: 'black',
                                         color: 'white',
                                         borderRadius: '0.5rem',
-
+                                        textAlign: 'center',
+                                        padding: '0 3rem 0 3rem',
                                     }
                                 }}
                             >
-                                Card Code: <div className={styles.rainbowText} onClick={modalClick}>
+                                Card Code:
+                                <div className={styles.modalFooter}>Click to copy!</div>
+                                <div className={styles.rainbowText} onClick={modalClick}>
                                     {cardCode}
                                 </div>
                             </Modal>
@@ -328,8 +330,8 @@ export default function Trade() {
 function Arrows({ moveLeft, moveRight, requirements}) {
     const requirementsMet = useCallback((enableToast=false) => {
         return requirements.every(([condition, message]) =>
-        condition || !(!enableToast || toast.error(message))
-    )
+            condition || !(!enableToast || toast.error(message))
+        )
     }, [requirements])
 
     const moveRightWithRequirements = () => {
