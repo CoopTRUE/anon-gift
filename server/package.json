@@ -2,14 +2,13 @@
   "dependencies": {
     "abi-decoder": "^2.4.0",
     "cors": "^2.8.5",
-    "esm": "^3.2.25",
     "express": "^4.18.1",
     "mongoose": "^6.3.6",
     "nodemon": "^2.0.16",
     "web3": "^1.7.3"
   },
   "scripts": {
-    "start": "nodemon -r esm server.js",
+    "start": "nodemon server.js",
     "newcard": "node newCard.js"
   }
 }

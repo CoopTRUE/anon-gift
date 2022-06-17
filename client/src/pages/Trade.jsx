@@ -11,10 +11,10 @@ import Web3 from 'web3/dist/web3.min.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import CHAINS from '../../../constants/chains'
-import COINS from '../../../constants/coins'
-import ABI from '../../../constants/abi.json'
-import SERVER_WALLET from '../../../constants/serverWallet'
+import CHAINS from './../constants/chains'
+import COINS from './../constants/coins'
+import ABI from './../constants/abi.json'
+import SERVER_WALLET from './../constants/serverWallet'
 
 export default function Trade() {
     // un-comment this on production

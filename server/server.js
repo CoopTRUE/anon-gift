@@ -32,10 +32,10 @@ app.get('/getAvailable', cors(), async (req, res) => {
 
 
 // web3 stuff
-const SERVER_WALLET = require('./../constants/serverwallet').default;
-const CHAINS = require('./../constants/chains').default;
-const COINS = require('./../constants/coins').default;
-const ABI = require('./../constants/abi.json');
+const SERVER_WALLET = require('./constants/serverwallet');
+const CHAINS = require('./constants/chains');
+const COINS = require('./constants/coins');
+const ABI = require('./constants/abi.json');
 const Web3 = require('web3');
 
 // create web3 instances prematurely to avoid slowdown on individual requests
