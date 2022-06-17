@@ -25,6 +25,9 @@ Client
 ```bash
 # -- develop --
 pnpm run dev
+
+# run with fake cards
+pnpm run devFake
 ```
 
 ### Stack
