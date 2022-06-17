@@ -260,7 +260,7 @@ export default function Trade() {
                                     Get gift card
                                 </Heading>
                                 <Text className={styles.description}>
-                                    Send the coins to our wallet and receive your giftcard
+                                    Send the coins to our wallet and receive your gift card
                                 </Text>
                             </div>
                             {modalHasOpened === true ? null :
