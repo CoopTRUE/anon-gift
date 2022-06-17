@@ -7,7 +7,7 @@ async function connect(verbose=true) {
 }
 connect(!process.argv[1].endsWith('newCard.js'))
 
-const GiftCard = require('./models/giftCard')
+const GiftCard = require('./models/giftcard')
 const Transaction = require('./models/transaction')
 const fake = process.argv.includes('fakeCards');
 

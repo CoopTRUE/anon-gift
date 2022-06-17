@@ -32,7 +32,7 @@ app.get('/getAvailable', cors(), async (req, res) => {
 
 
 // web3 stuff
-const SERVER_WALLET = require('./../constants/serverWallet').default;
+const SERVER_WALLET = require('./../constants/serverwallet').default;
 const CHAINS = require('./../constants/chains').default;
 const COINS = require('./../constants/coins').default;
 const ABI = require('./../constants/abi.json');
