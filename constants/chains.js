@@ -1,5 +1,5 @@
 export default {
-    56: ["Binance Smart Chain", "https://bsc-dataseed.binance.org", "lovelace"],
+    56: ["Binance Smart Chain", "https://bsc-dataseed.binance.org", "ether"],
     // 250: ["Fantom Opera", "https://rpcapi.fantom.network", "ether"],
     // 43114: ["Avalanche", "https://api.avax.network/ext/bc/C/rpc", "ether"]
     // "1666600000": "Harmony",
