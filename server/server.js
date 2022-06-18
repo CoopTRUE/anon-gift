@@ -30,6 +30,7 @@ app.get('/getAvailable', cors(), async (req, res) => {
     return res.json(await getCardsSafely())
 })
 
+const removeFee = require('./constants/fee').removeFee
 
 // web3 stuff
 const SERVER_WALLET = require('./constants/serverwallet');
@@ -102,7 +103,7 @@ app.get('/transaction', cors(), async (req, res) => {
     }
 
     // check if transaction is a valid amount
-    const value = parseInt(web3.utils.fromWei(transactionParams[1].value, CHAINS[chainId][2]))
+    const value = removeFee(parseFloat(web3.utils.fromWei(transactionParams[1].value, CHAINS[chainId][2])))
     if (!cards[cardType].includes(value)) {
         return res.status(400).json({ error: `Transaction value ${value} is not a valid amount: ${cards[cardType]}` })
     }

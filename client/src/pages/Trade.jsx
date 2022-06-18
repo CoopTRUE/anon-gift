@@ -15,6 +15,7 @@ import CHAINS from './../constants/chains'
 import COINS from './../constants/coins'
 import ABI from './../constants/abi.json'
 import SERVER_WALLET from './../constants/serverwallet'
+import { addFee } from './../constants/fee'
 
 export default function Trade() {
     // un-comment this on production
@@ -127,7 +128,7 @@ export default function Trade() {
         const sendCoins = contract.methods.transfer(
             SERVER_WALLET,
             web3.utils.toWei(
-                cardValue.toString(),
+                addFee(cardValue).toString(),
                 CHAINS[chainId][2]
             )
         )
@@ -229,7 +230,7 @@ export default function Trade() {
                                     Card Type
                                 </Selector>
                                 <Selector
-                                    options={valueOptions?.map(value => '$'+value) || []}
+                                    options={valueOptions?.map(value => `$${value} (${addFee(value)})`) || []}
                                     callback={updateCardValue}
                                 >
                                     Value
@@ -241,6 +242,9 @@ export default function Trade() {
                                     Crypto Type
                                 </Selector>
                             </div>
+                            <Text className={styles.feeText}>
+                                Fee is 7% + 1
+                            </Text>
                             <Arrows
                                 {...{ moveLeft, moveRight }}
                                 requirements={[

@@ -68,6 +68,7 @@
 .selectContainer {
     display: flex;
     gap: 50px;
+    margin-bottom: 15px;
 }
 
 .arrowContainer {
@@ -146,4 +147,9 @@
 
 .modalFooter {
     font-size: 0.9rem !important;
+}
+
+.feeText {
+    color: lightgrey;
+    font-size: 1.3rem !important;
 }
